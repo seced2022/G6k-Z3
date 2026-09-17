@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050608" />
+  <title>ORGANIZACIÓN · G6k-Z3</title>
+  <style>
+    :root {
+      --bg:#050608;
+      --panel:#0d1015;
+      --panel2:#151a22;
+      --text:#f5f7fb;
+      --muted:#a6adb7;
+      --accent:#ff7a00;
+      --line:rgba(255,122,0,.75);
+      --shadow:0 20px 55px rgba(0,0,0,.5);
+    }
+
+    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+    html,body { margin:0; width:100%; min-height:100%; background:var(--bg); }
+    body {
+      min-height:100svh;
+      color:var(--text);
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      overflow-x:hidden;
+    }
+
+    button { font:inherit; }
+
+    .screen { display:none; min-height:100svh; }
+    .screen.active { display:block; }
+
+    /* PORTADA: no se cambia el diseño */
+    .home {
+      width:100vw;
+      height:100svh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      background:#050608;
+    }
+
+    .cover-wrap {
+      position:relative;
+      width:100%;
+      height:100%;
+      max-width:1024px;
+      margin:0 auto;
+    }
+
+    .cover {
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      object-position:center center;
+      display:block;
+      user-select:none;
+      -webkit-user-drag:none;
+    }
+
+    /* Zonas táctiles invisibles sobre los 6 bloques */
+    .hotspot {
+      position:absolute;
+      border:0;
+      background:transparent;
+      cursor:pointer;
+      z-index:5;
+      border-radius:18px;
+    }
+    .hotspot:focus-visible {
+      outline:2px solid var(--accent);
+      outline-offset:2px;
+    }
+
+    /* Coordenadas relativas sobre la portada aprobada */
+    .hs-oficial       { left:26.0%; top:45.8%; width:22.6%; height:12.8%; }
+    .hs-prensa        { left:51.0%; top:45.8%; width:22.6%; height:12.8%; }
+    .hs-participante  { left:76.0%; top:45.8%; width:22.0%; height:12.8%; }
+
+    .hs-asistencia    { left:26.0%; top:61.0%; width:22.6%; height:12.8%; }
+    .hs-organizacion  { left:51.0%; top:61.0%; width:22.6%; height:12.8%; }
+    .hs-vip           { left:76.0%; top:61.0%; width:22.0%; height:12.8%; }
+
+    /* Pantallas internas */
+    .module {
+      min-height:100svh;
+      padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);
+      background:
+        radial-gradient(circle at 80% 0%, rgba(255,122,0,.10), transparent 24%),
+        linear-gradient(180deg,#07090c,#050608);
+    }
+
+    .module-inner {
+      width:min(900px,100%);
+      margin:0 auto;
+    }
+
+    .topbar {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:22px;
+    }
+
+    .back {
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      background:#0d1117;
+      padding:11px 14px;
+      border-radius:13px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .brand {
+      font-weight:900;
+      letter-spacing:.08em;
+      color:var(--accent);
+    }
+
+    .hero {
+      padding:24px 0 16px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      margin-bottom:18px;
+    }
+
+    .eyebrow {
+      color:var(--accent);
+      font-size:.78rem;
+      font-weight:900;
+      letter-spacing:.17em;
+    }
+
+    h1 {
+      margin:7px 0 6px;
+      font-size:clamp(2rem,6vw,3.6rem);
+      letter-spacing:-.04em;
+    }
+
+    .hero p {
+      margin:0;
+      color:var(--muted);
+      font-size:1rem;
+    }
+
+    .grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:14px;
+      margin-top:20px;
+    }
+
+    .card {
+      min-height:150px;
+      padding:18px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.08);
+      background:
+        linear-gradient(180deg,rgba(20,26,34,.95),rgba(10,14,19,.96));
+      box-shadow:var(--shadow);
+    }
+
+    .card h3 {
+      margin:0 0 8px;
+      font-size:1.08rem;
+    }
+
+    .card p {
+      margin:0;
+      color:var(--muted);
+      line-height:1.45;
+    }
+
+    .status {
+      display:inline-block;
+      margin-top:14px;
+      padding:6px 9px;
+      border-radius:999px;
+      background:rgba(255,122,0,.12);
+      color:#ffb36b;
+      font-size:.75rem;
+      font-weight:900;
+    }
+
+    .footer {
+      margin-top:26px;
+      text-align:center;
+      color:#77808b;
+      font-size:.8rem;
+      letter-spacing:.08em;
+    }
+
+    @media (max-width:700px) {
+      .grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+  <section id="organizacion" class="screen active module">
+    <div class="module-inner">
+      <div class="topbar"><button class="back" onclick="location.href='index.html'">← Inicio</button><div class="brand">G6K® · Z3</div></div>
+      <div class="hero">
+        <div class="eyebrow">MÓDULO</div>
+        <h1>ORGANIZACIÓN</h1>
+        <p>Coordinación general del evento.</p>
+      </div>
+      <div class="grid">
+        <div class="card"><h3>Panel general</h3><p>Visión global de usuarios, accesos, incidencias y módulos.</p><span class="status">EN DESARROLLO</span></div>
+        <div class="card"><h3>Avisos</h3><p>Envío de mensajes a oficiales, prensa, participantes, asistencia y VIP.</p><span class="status">EN DESARROLLO</span></div>
+        <div class="card"><h3>Incidencias</h3><p>Registro y seguimiento de incidencias del evento.</p><span class="status">EN DESARROLLO</span></div>
+        <div class="card"><h3>Control de accesos</h3><p>Consulta de lecturas TAG y autorizaciones.</p><span class="status">EN DESARROLLO</span></div>
+      </div>
+      <div class="footer">G6K® 2026</div>
+    </div>
+  </section>
+</body>
+</html>

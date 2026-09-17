@@ -333,6 +333,7 @@
                 <th>TELÉFONO</th>
                 <th>TAG</th>
                 <th>ESTADO</th>
+                <th>FICHA</th>
               </tr>
             </thead>
             <tbody id="peopleBody"></tbody>
@@ -557,10 +558,92 @@
     </div>
   </div>
 
+
+  <!-- MODAL FICHA PERSONA / OFICIAL -->
+  <div id="profileModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Ficha operativa</h3>
+          <div id="profilePersonName" class="muted" style="margin-top:4px"></div>
+        </div>
+        <button class="btn small" onclick="closeProfileModal()">Cerrar</button>
+      </div>
+
+      <input id="profilePersonId" type="hidden">
+
+      <div class="form-grid">
+        <label>Licencia / acreditación
+          <input id="profLicense" placeholder="Ej. OF-12345">
+        </label>
+
+        <label>Especialidad / función
+          <input id="profSpecialty" placeholder="Ej. Cronometrador">
+        </label>
+
+        <label>Puesto asignado
+          <input id="profPost" placeholder="Ej. TC3 · Llegada">
+        </label>
+
+        <label>Ubicación
+          <input id="profLocation" placeholder="Ej. Peñarroya-Pueblonuevo">
+        </label>
+
+        <label>Hora de presentación
+          <input id="profStart" type="time">
+        </label>
+
+        <label>Fin estimado
+          <input id="profEnd" type="time">
+        </label>
+
+        <label class="full">Alojamiento
+          <input id="profHotel" placeholder="Nombre del hotel / alojamiento">
+        </label>
+
+        <label>Habitación
+          <input id="profRoom" placeholder="Ej. 204">
+        </label>
+
+        <label>Entrada alojamiento
+          <input id="profCheckin" type="date">
+        </label>
+
+        <label>Salida alojamiento
+          <input id="profCheckout" type="date">
+        </label>
+
+        <label class="full">Dirección del alojamiento
+          <input id="profHotelAddress" placeholder="Dirección">
+        </label>
+
+        <label class="full">Comidas autorizadas
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="mealFriDinner" type="checkbox"> Cena viernes</label>
+            <label class="checkbox-line"><input id="mealSatBreakfast" type="checkbox"> Desayuno sábado</label>
+            <label class="checkbox-line"><input id="mealSatLunch" type="checkbox"> Comida sábado</label>
+            <label class="checkbox-line"><input id="mealSatDinner" type="checkbox"> Cena sábado</label>
+            <label class="checkbox-line"><input id="mealSunBreakfast" type="checkbox"> Desayuno domingo</label>
+            <label class="checkbox-line"><input id="mealSunLunch" type="checkbox"> Comida domingo</label>
+          </div>
+        </label>
+
+        <label class="full">Notas / instrucciones
+          <textarea id="profNotes" rows="4" placeholder="Información operativa para esta persona..."></textarea>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" onclick="saveProfile()">Guardar ficha</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE = {
       tags: 'g6k_z3_admin_tags',
-      people: 'g6k_z3_admin_people'
+      people: 'g6k_z3_admin_people',
+      profiles: 'g6k_z3_admin_profiles'
     };
 
     const $ = id => document.getElementById(id);
@@ -678,8 +761,9 @@
           <td>${p.phone||'-'}</td>
           <td>${tagByPerson[p.id]||'<span class="muted">Sin TAG</span>'}</td>
           <td><span class="pill green">ALTA</span></td>
+          <td><button class="btn small" onclick="openProfileModal('${p.id}')">Editar ficha</button></td>
         </tr>
-      `).join('')||'<tr><td colspan="5" class="muted">No hay personas.</td></tr>';
+      `).join('')||'<tr><td colspan="6" class="muted">No hay personas.</td></tr>';
     }
 
     function fillPersonSelect(){
@@ -755,6 +839,78 @@
       savePeople(people);
       closePersonModal();
       renderAll();
+    }
+
+
+    function getProfiles(){
+      return JSON.parse(localStorage.getItem(STORAGE.profiles) || '{}');
+    }
+
+    function saveProfiles(data){
+      localStorage.setItem(STORAGE.profiles, JSON.stringify(data));
+    }
+
+    function openProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+      const profiles=getProfiles();
+      const x=profiles[personId] || {};
+      $('profilePersonId').value=personId;
+      $('profilePersonName').textContent=fullName(person)+' · '+person.role;
+      $('profLicense').value=x.license||'';
+      $('profSpecialty').value=x.specialty||'';
+      $('profPost').value=x.post||'';
+      $('profLocation').value=x.location||'';
+      $('profStart').value=x.start||'';
+      $('profEnd').value=x.end||'';
+      $('profHotel').value=x.hotel||'';
+      $('profRoom').value=x.room||'';
+      $('profCheckin').value=x.checkin||'';
+      $('profCheckout').value=x.checkout||'';
+      $('profHotelAddress').value=x.hotelAddress||'';
+      $('mealFriDinner').checked=!!x.meals?.friDinner;
+      $('mealSatBreakfast').checked=!!x.meals?.satBreakfast;
+      $('mealSatLunch').checked=!!x.meals?.satLunch;
+      $('mealSatDinner').checked=!!x.meals?.satDinner;
+      $('mealSunBreakfast').checked=!!x.meals?.sunBreakfast;
+      $('mealSunLunch').checked=!!x.meals?.sunLunch;
+      $('profNotes').value=x.notes||'';
+      $('profileModal').classList.add('show');
+    }
+
+    function closeProfileModal(){
+      $('profileModal').classList.remove('show');
+    }
+
+    function saveProfile(){
+      const personId=$('profilePersonId').value;
+      if(!personId) return;
+      const profiles=getProfiles();
+      profiles[personId]={
+        license:$('profLicense').value.trim(),
+        specialty:$('profSpecialty').value.trim(),
+        post:$('profPost').value.trim(),
+        location:$('profLocation').value.trim(),
+        start:$('profStart').value,
+        end:$('profEnd').value,
+        hotel:$('profHotel').value.trim(),
+        room:$('profRoom').value.trim(),
+        checkin:$('profCheckin').value,
+        checkout:$('profCheckout').value,
+        hotelAddress:$('profHotelAddress').value.trim(),
+        meals:{
+          friDinner:$('mealFriDinner').checked,
+          satBreakfast:$('mealSatBreakfast').checked,
+          satLunch:$('mealSatLunch').checked,
+          satDinner:$('mealSatDinner').checked,
+          sunBreakfast:$('mealSunBreakfast').checked,
+          sunLunch:$('mealSunLunch').checked
+        },
+        notes:$('profNotes').value.trim()
+      };
+      saveProfiles(profiles);
+      closeProfileModal();
+      alert('Ficha guardada.');
     }
 
     function renderAll(){

@@ -8,7 +8,1140 @@
   <style>
     :root{
       --bg:#050608;
+      --panel:#0e1218;<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050608" />
+  <title>ADMIN · G6k-Z3</title>
+  <style>
+    :root{
+      --bg:#050608;
       --panel:#0e1218;
+      --panel2:#151b24;
+      --text:#f5f7fb;
+      --muted:#9fa7b2;
+      --accent:#ff7a00;
+      --accent2:#ff9b3f;
+      --green:#2bd27f;
+      --red:#ff5a63;
+      --blue:#5ca9ff;
+      --line:rgba(255,255,255,.09);
+      --shadow:0 18px 55px rgba(0,0,0,.48);
+      --radius:20px;
+    }
+
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(255,122,0,.11), transparent 24%),
+        radial-gradient(circle at 0% 25%, rgba(50,90,150,.08), transparent 26%),
+        linear-gradient(180deg,#07090c,#050608 55%);
+    }
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    input,select,textarea{
+      width:100%;
+      background:#090c11;
+      border:1px solid rgba(255,255,255,.11);
+      color:var(--text);
+      border-radius:12px;
+      padding:12px 13px;
+      outline:none;
+    }
+    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+    .hidden{display:none!important}
+
+    .app{
+      width:min(1180px,100%);
+      margin:0 auto;
+      padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .brand-block{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:50px;height:50px;border-radius:15px;
+      display:grid;place-items:center;
+      font-weight:1000;font-size:1.1rem;
+      color:#111;background:var(--accent);
+      box-shadow:0 8px 30px rgba(255,122,0,.18);
+    }
+    .brand-title{font-weight:1000;letter-spacing:.04em}
+    .brand-sub{color:var(--muted);font-size:.78rem;margin-top:3px}
+    .top-actions{display:flex;gap:8px}
+
+    .btn{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;padding:11px 13px;font-weight:850;
+      color:var(--text);background:#0d1219;
+    }
+    .btn.primary{background:var(--accent);color:#111;border-color:transparent}
+    .btn.danger{background:#351317;color:#ff8289;border-color:#62252d}
+    .btn.small{padding:8px 10px;font-size:.82rem}
+
+    .hero{
+      display:flex;justify-content:space-between;align-items:end;gap:18px;
+      padding:22px 0 18px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:16px;
+    }
+    .eyebrow{color:var(--accent);font-size:.75rem;letter-spacing:.18em;font-weight:950}
+    h1{margin:6px 0 6px;font-size:clamp(2rem,5vw,3.25rem);letter-spacing:-.04em}
+    .hero p{margin:0;color:var(--muted)}
+    .admin-badge{
+      padding:8px 11px;border:1px solid rgba(43,210,127,.28);
+      background:rgba(43,210,127,.08);color:#86efb5;border-radius:999px;
+      font-size:.76rem;font-weight:900;white-space:nowrap;
+    }
+
+    .stats{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;
+    }
+    .stat{
+      padding:14px;border-radius:16px;background:rgba(12,16,22,.92);
+      border:1px solid var(--line);
+    }
+    .stat strong{display:block;font-size:1.55rem}
+    .stat span{color:var(--muted);font-size:.8rem}
+
+    .nav-grid{
+      display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;
+    }
+    .nav-card{
+      min-height:108px;border-radius:18px;padding:14px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg,rgba(20,26,35,.95),rgba(10,14,19,.96));
+      text-align:left;color:var(--text);
+      box-shadow:var(--shadow);
+      transition:.15s ease;
+    }
+    .nav-card:hover{border-color:rgba(255,122,0,.6);transform:translateY(-2px)}
+    .nav-card.active{border-color:var(--accent);box-shadow:0 0 0 1px rgba(255,122,0,.18) inset,var(--shadow)}
+    .nav-icon{font-size:1.6rem;display:block;margin-bottom:15px}
+    .nav-title{font-weight:950;display:block}
+    .nav-sub{color:var(--muted);display:block;font-size:.75rem;margin-top:4px;line-height:1.25}
+
+    .panel{display:none}
+    .panel.active{display:block}
+    .panel-head{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+    }
+    .panel-head h2{margin:0;font-size:1.35rem}
+    .panel-head p{margin:3px 0 0;color:var(--muted);font-size:.88rem}
+
+    .card{
+      background:linear-gradient(180deg,rgba(18,24,33,.97),rgba(10,14,19,.97));
+      border:1px solid var(--line);
+      border-radius:20px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;
+    }
+    .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:12px}
+    .toolbar .grow{flex:1}
+
+    .table-wrap{overflow:auto;border:1px solid var(--line);border-radius:16px}
+    table{width:100%;border-collapse:collapse;min-width:720px}
+    th,td{padding:12px 11px;border-bottom:1px solid rgba(255,255,255,.06);text-align:left;font-size:.86rem}
+    th{color:#dce2ea;background:#0a0e14;font-size:.76rem;letter-spacing:.04em}
+    td{color:#e9edf2}
+    tr:last-child td{border-bottom:0}
+    .pill{display:inline-block;padding:5px 8px;border-radius:999px;font-size:.7rem;font-weight:900}
+    .pill.green{background:rgba(43,210,127,.12);color:#85efb4}
+    .pill.orange{background:rgba(255,122,0,.12);color:#ffba78}
+    .pill.gray{background:rgba(255,255,255,.08);color:#b5bdc8}
+    .pill.red{background:rgba(255,90,99,.12);color:#ff9298}
+    .pill.blue{background:rgba(92,169,255,.12);color:#95c9ff}
+
+    .form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .form-grid .full{grid-column:1/-1}
+    label{display:flex;flex-direction:column;gap:6px;color:#d9dfe7;font-size:.86rem}
+    .actions-row{display:flex;gap:10px;justify-content:flex-end;margin-top:12px}
+
+    .section-grid{
+      display:grid;grid-template-columns:repeat(2,1fr);gap:14px;
+    }
+    .mini-card{
+      padding:15px;border:1px solid var(--line);border-radius:16px;background:#0a0e14;
+    }
+    .mini-card h3{margin:0 0 6px;font-size:1rem}
+    .mini-card p{margin:0;color:var(--muted);line-height:1.4;font-size:.87rem}
+
+    .notice{
+      padding:12px 14px;border-radius:14px;background:rgba(255,122,0,.08);
+      border:1px solid rgba(255,122,0,.22);color:#ffc188;margin-bottom:14px;
+      font-size:.86rem;line-height:1.4;
+    }
+
+    .modal{
+      position:fixed;inset:0;background:rgba(0,0,0,.72);
+      display:none;place-items:center;padding:18px;z-index:50;
+    }
+    .modal.show{display:grid}
+    .modal-card{
+      width:min(560px,100%);max-height:90svh;overflow:auto;
+      background:linear-gradient(180deg,#161c25,#0b0f15);
+      border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:var(--shadow);
+    }
+    .modal-head{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px}
+    .modal-head h3{margin:0}
+    .muted{color:var(--muted)}
+
+    .footer{
+      margin-top:24px;text-align:center;color:#78818c;font-size:.78rem;letter-spacing:.08em;
+    }
+
+    @media(max-width:900px){
+      .nav-grid{grid-template-columns:repeat(2,1fr)}
+      .stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:650px){
+      .app{padding-left:10px;padding-right:10px}
+      .hero{align-items:flex-start;flex-direction:column}
+      .form-grid,.section-grid{grid-template-columns:1fr}
+      .form-grid .full{grid-column:auto}
+      .toolbar{flex-wrap:wrap}
+      .toolbar .grow{flex:1 1 100%}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="topbar">
+      <div class="brand-block">
+        <div class="logo">G6K</div>
+        <div>
+          <div class="brand-title">G6k-Z3 · ADMIN</div>
+          <div class="brand-sub">Centro de gestión del evento</div>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="btn small" onclick="location.href='index.html'">Ver app</button>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div>
+        <div class="eyebrow">PANEL ADMINISTRADOR</div>
+        <h1>Control G6k-Z3</h1>
+        <p>Gestiona TAGs, personas, permisos y servicios del rally.</p>
+      </div>
+      <div class="admin-badge">● SESIÓN ADMIN</div>
+    </section>
+
+    <div id="stats" class="stats"></div>
+
+    <nav class="nav-grid">
+      <button class="nav-card active" data-panel="tags">
+        <span class="nav-icon">🏷️</span>
+        <span class="nav-title">TAGS</span>
+        <span class="nav-sub">IDs, asignación y estado</span>
+      </button>
+      <button class="nav-card" data-panel="personas">
+        <span class="nav-icon">👤</span>
+        <span class="nav-title">PERSONAS</span>
+        <span class="nav-sub">Perfiles y acreditaciones</span>
+      </button>
+      <button class="nav-card" data-panel="permisos">
+        <span class="nav-icon">🔐</span>
+        <span class="nav-title">PERMISOS</span>
+        <span class="nav-sub">Zonas y autorizaciones</span>
+      </button>
+      <button class="nav-card" data-panel="alojamientos">
+        <span class="nav-icon">🏨</span>
+        <span class="nav-title">ALOJAMIENTOS</span>
+        <span class="nav-sub">Hoteles y habitaciones</span>
+      </button>
+      <button class="nav-card" data-panel="comidas">
+        <span class="nav-icon">🍽️</span>
+        <span class="nav-title">COMIDAS</span>
+        <span class="nav-sub">Servicios y consumos</span>
+      </button>
+      <button class="nav-card" data-panel="accesos">
+        <span class="nav-icon">📍</span>
+        <span class="nav-title">ACCESOS</span>
+        <span class="nav-sub">Lecturas TAG e historial</span>
+      </button>
+      <button class="nav-card" data-panel="avisos">
+        <span class="nav-icon">📢</span>
+        <span class="nav-title">AVISOS</span>
+        <span class="nav-sub">Mensajes por perfiles</span>
+      </button>
+      <button class="nav-card" data-panel="config">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-title">CONFIGURACIÓN</span>
+        <span class="nav-sub">Evento y sistema</span>
+      </button>
+    </nav>
+
+    <div class="notice">
+      Modo de desarrollo: esta versión guarda datos de prueba en el navegador. Cuando conectemos Firebase, este mismo panel leerá y guardará la información real del evento.
+    </div>
+
+    <!-- TAGS -->
+    <section id="panel-tags" class="panel active">
+      <div class="panel-head">
+        <div>
+          <h2>TAGS</h2>
+          <p>Alta, asignación, activación y bloqueo.</p>
+        </div>
+        <button class="btn primary" onclick="openTagModal()">+ Nueva TAG</button>
+      </div>
+
+      <div class="card">
+        <div class="toolbar">
+          <input id="tagSearch" class="grow" placeholder="Buscar ID, nombre o perfil..." oninput="renderTags()">
+          <select id="tagFilter" onchange="renderTags()">
+            <option value="all">Todos</option>
+            <option value="active">Activos</option>
+            <option value="unassigned">Sin asignar</option>
+            <option value="blocked">Bloqueados</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ID TAG</th>
+                <th>ASIGNADA A</th>
+                <th>PERFIL</th>
+                <th>ESTADO</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody id="tagsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERSONAS -->
+    <section id="panel-personas" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Personas / Acreditaciones</h2>
+          <p>Base común para Oficial, Prensa, Participante, Asistencia, Organización y VIP.</p>
+        </div>
+        <button class="btn primary" onclick="openPersonModal()">+ Nueva persona</button>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>NOMBRE</th>
+                <th>PERFIL</th>
+                <th>TELÉFONO</th>
+                <th>TAG</th>
+                <th>ESTADO</th>
+                <th>FICHA</th>
+              </tr>
+            </thead>
+            <tbody id="peopleBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- PERMISOS -->
+    <section id="panel-permisos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Permisos</h2>
+          <p>Define dónde puede acceder cada persona o TAG.</p>
+        </div>
+      </div>
+      <div class="section-grid">
+        <div class="mini-card"><h3>Parque de asistencia</h3><p>Autorizar o denegar el acceso a zona de asistencia.</p></div>
+        <div class="mini-card"><h3>Dirección de carrera</h3><p>Acceso restringido para perfiles autorizados.</p></div>
+        <div class="mini-card"><h3>Tramos</h3><p>Permisos por TC, salida, llegada o controles.</p></div>
+        <div class="mini-card"><h3>Comedor</h3><p>Autoriza servicios de comida vinculados a la TAG.</p></div>
+        <div class="mini-card"><h3>Alojamiento</h3><p>Relaciona la acreditación con hotel y habitación.</p></div>
+        <div class="mini-card"><h3>VIP / Prensa</h3><p>Zonas especiales y accesos por tipo de acreditación.</p></div>
+      </div>
+    </section>
+
+    <!-- ALOJAMIENTOS -->
+    <section id="panel-alojamientos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Alojamientos</h2>
+          <p>Hoteles, habitaciones, fechas y personas asignadas.</p>
+        </div>
+        <button class="btn primary" onclick="alert('En el siguiente paso crearemos el editor de alojamientos.')">+ Alojamiento</button>
+      </div>
+      <div class="card">
+        <div class="section-grid">
+          <div class="mini-card"><h3>Hotel / alojamiento</h3><p>Nombre, dirección, contacto, check-in y check-out.</p></div>
+          <div class="mini-card"><h3>Habitaciones</h3><p>Asignación individual o compartida, número y ocupantes.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMIDAS -->
+    <section id="panel-comidas" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Comidas</h2>
+          <p>Servicios asignados y control mediante TAG.</p>
+        </div>
+        <button class="btn primary" onclick="alert('En el siguiente paso crearemos el calendario de comidas.')">+ Servicio</button>
+      </div>
+      <div class="card">
+        <div class="section-grid">
+          <div class="mini-card"><h3>Desayunos</h3><p>Define fecha, lugar, horario y perfiles autorizados.</p></div>
+          <div class="mini-card"><h3>Comidas</h3><p>Servicio de mediodía y control de uso con TAG.</p></div>
+          <div class="mini-card"><h3>Cenas</h3><p>Servicio de noche, ubicación y horario.</p></div>
+          <div class="mini-card"><h3>Consumos</h3><p>Histórico para impedir dobles usos del mismo servicio.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCESOS -->
+    <section id="panel-accesos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Accesos / Historial</h2>
+          <p>Cada lectura TAG quedará registrada aquí.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>HORA</th><th>TAG</th><th>PERSONA</th><th>PUNTO</th><th>RESULTADO</th></tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="5" class="muted">Todavía no hay lecturas registradas.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- AVISOS -->
+    <section id="panel-avisos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Avisos</h2>
+          <p>Mensajes generales o dirigidos a un perfil concreto.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <label>Destinatarios
+            <select>
+              <option>Todos</option>
+              <option>Oficiales</option>
+              <option>Prensa</option>
+              <option>Participantes</option>
+              <option>Asistencia</option>
+              <option>Organización</option>
+              <option>VIP</option>
+            </select>
+          </label>
+          <label>Prioridad
+            <select>
+              <option>Normal</option>
+              <option>Importante</option>
+              <option>Urgente</option>
+            </select>
+          </label>
+          <label class="full">Mensaje
+            <textarea rows="4" placeholder="Escribe el aviso..."></textarea>
+          </label>
+        </div>
+        <div class="actions-row">
+          <button class="btn primary">Enviar aviso</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIG -->
+    <section id="panel-config" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Configuración</h2>
+          <p>Datos generales del evento y parámetros del sistema.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="form-grid">
+          <label>Nombre del evento
+            <input value="Rallye Valle del Guadiato">
+          </label>
+          <label>Año
+            <input value="2026">
+          </label>
+          <label class="full">Nombre visible de la aplicación
+            <input value="G6k-Z3">
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">G6K® 2026 · G6k-Z3</div>
+  </main>
+
+  <!-- MODAL TAG -->
+  <div id="tagModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Nueva TAG</h3>
+        <button class="btn small" onclick="closeTagModal()">Cerrar</button>
+      </div>
+      <div class="form-grid">
+        <label>ID TAG
+          <input id="tagId" placeholder="Ej. Z3-000184">
+        </label>
+        <label>Perfil
+          <select id="tagRole">
+            <option value="">Sin asignar</option>
+            <option>OFICIAL</option>
+            <option>PRENSA</option>
+            <option>PARTICIPANTE</option>
+            <option>ASISTENCIA</option>
+            <option>ORGANIZACIÓN</option>
+            <option>VIP</option>
+          </select>
+        </label>
+        <label class="full">Asignar a
+          <select id="tagPerson"></select>
+        </label>
+        <label>Estado
+          <select id="tagStatus">
+            <option value="active">Activa</option>
+            <option value="unassigned">Sin asignar</option>
+            <option value="blocked">Bloqueada</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions-row">
+        <button class="btn primary" onclick="saveTag()">Guardar TAG</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL PERSONA -->
+  <div id="personModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <h3>Nueva persona</h3>
+        <button class="btn small" onclick="closePersonModal()">Cerrar</button>
+      </div>
+      <div class="form-grid">
+        <label>Nombre
+          <input id="pName" placeholder="Nombre">
+        </label>
+        <label>Apellidos
+          <input id="pSurname" placeholder="Apellidos">
+        </label>
+        <label>Perfil
+          <select id="pRole">
+            <option>OFICIAL</option>
+            <option>PRENSA</option>
+            <option>PARTICIPANTE</option>
+            <option>ASISTENCIA</option>
+            <option>ORGANIZACIÓN</option>
+            <option>VIP</option>
+          </select>
+        </label>
+        <label>Teléfono
+          <input id="pPhone" placeholder="Teléfono">
+        </label>
+        <label class="full">Email
+          <input id="pEmail" type="email" placeholder="correo@ejemplo.com">
+        </label>
+      </div>
+      <div class="actions-row">
+        <button class="btn primary" onclick="savePerson()">Guardar persona</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL FICHA PERSONA / OFICIAL -->
+  <div id="profileModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Ficha operativa</h3>
+          <div id="profilePersonName" class="muted" style="margin-top:4px"></div>
+        </div>
+        <button class="btn small" onclick="closeProfileModal()">Cerrar</button>
+      </div>
+
+      <input id="profilePersonId" type="hidden">
+
+      <div class="form-grid">
+        <label>Licencia / acreditación
+          <input id="profLicense" placeholder="Ej. OF-12345">
+        </label>
+
+        <label>Especialidad / función
+          <input id="profSpecialty" placeholder="Ej. Cronometrador">
+        </label>
+
+        <label>Puesto asignado
+          <input id="profPost" placeholder="Ej. TC3 · Llegada">
+        </label>
+
+        <label>Ubicación
+          <input id="profLocation" placeholder="Ej. Peñarroya-Pueblonuevo">
+        </label>
+
+        <label>Hora de presentación
+          <input id="profStart" type="time">
+        </label>
+
+        <label>Fin estimado
+          <input id="profEnd" type="time">
+        </label>
+
+        <label class="full">Alojamiento
+          <input id="profHotel" placeholder="Nombre del hotel / alojamiento">
+        </label>
+
+        <label>Habitación
+          <input id="profRoom" placeholder="Ej. 204">
+        </label>
+
+        <label>Entrada alojamiento
+          <input id="profCheckin" type="date">
+        </label>
+
+        <label>Salida alojamiento
+          <input id="profCheckout" type="date">
+        </label>
+
+        <label class="full">Dirección del alojamiento
+          <input id="profHotelAddress" placeholder="Dirección">
+        </label>
+
+        <label class="full">Comidas autorizadas
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="mealFriDinner" type="checkbox"> Cena viernes</label>
+            <label class="checkbox-line"><input id="mealSatBreakfast" type="checkbox"> Desayuno sábado</label>
+            <label class="checkbox-line"><input id="mealSatLunch" type="checkbox"> Comida sábado</label>
+            <label class="checkbox-line"><input id="mealSatDinner" type="checkbox"> Cena sábado</label>
+            <label class="checkbox-line"><input id="mealSunBreakfast" type="checkbox"> Desayuno domingo</label>
+            <label class="checkbox-line"><input id="mealSunLunch" type="checkbox"> Comida domingo</label>
+          </div>
+        </label>
+
+        <label class="full">Notas / instrucciones
+          <textarea id="profNotes" rows="4" placeholder="Información operativa para esta persona..."></textarea>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" onclick="saveProfile()">Guardar ficha</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- MODAL FICHA PRENSA -->
+  <div id="pressProfileModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Ficha de prensa</h3>
+          <div id="pressPersonName" class="muted" style="margin-top:4px"></div>
+        </div>
+        <button class="btn small" onclick="closePressProfileModal()">Cerrar</button>
+      </div>
+
+      <input id="pressPersonId" type="hidden">
+
+      <div class="form-grid">
+        <label>Medio de comunicación
+          <input id="pressMedia" placeholder="Ej. Motor Andalucía">
+        </label>
+
+        <label>Tipo de profesional
+          <select id="pressType">
+            <option value="">Seleccionar</option>
+            <option>Periodista</option>
+            <option>Fotógrafo</option>
+            <option>Vídeo / Cámara</option>
+            <option>Radio</option>
+            <option>Televisión</option>
+            <option>Prensa digital</option>
+            <option>Otro</option>
+          </select>
+        </label>
+
+        <label>Nº de acreditación
+          <input id="pressAccreditation" placeholder="Ej. PRE-024">
+        </label>
+
+        <label>Función / cargo
+          <input id="pressFunction" placeholder="Ej. Fotógrafa">
+        </label>
+
+        <label>Vehículo
+          <input id="pressVehicle" placeholder="Marca / modelo">
+        </label>
+
+        <label>Matrícula
+          <input id="pressPlate" placeholder="Ej. 1234 ABC">
+        </label>
+
+        <label class="full">Parking asignado
+          <input id="pressParking" placeholder="Ej. Parking Prensa P2">
+        </label>
+
+        <label class="full">Zonas autorizadas
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="zonePressRoom" type="checkbox"> Sala de prensa</label>
+            <label class="checkbox-line"><input id="zoneServicePark" type="checkbox"> Parque de asistencia</label>
+            <label class="checkbox-line"><input id="zoneStart" type="checkbox"> Zona de salida</label>
+            <label class="checkbox-line"><input id="zoneFinish" type="checkbox"> Zona de llegada</label>
+            <label class="checkbox-line"><input id="zoneStagePress" type="checkbox"> Zonas prensa en tramo</label>
+            <label class="checkbox-line"><input id="zonePodium" type="checkbox"> Podium / ceremonia</label>
+          </div>
+        </label>
+
+        <label class="full">Alojamiento
+          <input id="pressHotel" placeholder="Nombre del hotel / alojamiento">
+        </label>
+
+        <label>Habitación
+          <input id="pressRoom" placeholder="Ej. 112">
+        </label>
+
+        <label>Entrada alojamiento
+          <input id="pressCheckin" type="date">
+        </label>
+
+        <label>Salida alojamiento
+          <input id="pressCheckout" type="date">
+        </label>
+
+        <label class="full">Dirección del alojamiento
+          <input id="pressHotelAddress" placeholder="Dirección">
+        </label>
+
+        <label class="full">Comidas autorizadas
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="pressMealFriDinner" type="checkbox"> Cena viernes</label>
+            <label class="checkbox-line"><input id="pressMealSatBreakfast" type="checkbox"> Desayuno sábado</label>
+            <label class="checkbox-line"><input id="pressMealSatLunch" type="checkbox"> Comida sábado</label>
+            <label class="checkbox-line"><input id="pressMealSatDinner" type="checkbox"> Cena sábado</label>
+            <label class="checkbox-line"><input id="pressMealSunBreakfast" type="checkbox"> Desayuno domingo</label>
+            <label class="checkbox-line"><input id="pressMealSunLunch" type="checkbox"> Comida domingo</label>
+          </div>
+        </label>
+
+        <label class="full">Notas / instrucciones
+          <textarea id="pressNotes" rows="4" placeholder="Indicaciones específicas de prensa..."></textarea>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" onclick="savePressProfile()">Guardar ficha de prensa</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE = {
+      tags: 'g6k_z3_admin_tags',
+      people: 'g6k_z3_admin_people',
+      profiles: 'g6k_z3_admin_profiles'
+    };
+
+    const $ = id => document.getElementById(id);
+
+    function getPeople(){
+      return JSON.parse(localStorage.getItem(STORAGE.people) || '[]');
+    }
+
+    function savePeople(list){
+      localStorage.setItem(STORAGE.people, JSON.stringify(list));
+    }
+
+    function getTags(){
+      return JSON.parse(localStorage.getItem(STORAGE.tags) || '[]');
+    }
+
+    function saveTags(list){
+      localStorage.setItem(STORAGE.tags, JSON.stringify(list));
+    }
+
+    function seed(){
+      if(!localStorage.getItem(STORAGE.people)){
+        savePeople([
+          {id:'P-001',name:'Juan',surname:'García López',role:'OFICIAL',phone:'600 000 001',email:'juan@ejemplo.es'},
+          {id:'P-002',name:'Laura',surname:'Ruiz Martín',role:'PRENSA',phone:'600 000 002',email:'laura@ejemplo.es'}
+        ]);
+      }
+      if(!localStorage.getItem(STORAGE.tags)){
+        saveTags([
+          {id:'Z3-000001',personId:'P-001',role:'OFICIAL',status:'active'},
+          {id:'Z3-000002',personId:'P-002',role:'PRENSA',status:'active'},
+          {id:'Z3-000003',personId:'',role:'',status:'unassigned'}
+        ]);
+      }
+    }
+
+    document.querySelectorAll('.nav-card').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.nav-card').forEach(b=>b.classList.remove('active'));
+        document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+        btn.classList.add('active');
+        $('panel-'+btn.dataset.panel).classList.add('active');
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    });
+
+    function fullName(p){
+      return (p.name+' '+p.surname).trim();
+    }
+
+    function rolePill(role){
+      if(!role) return '<span class="pill gray">SIN ASIGNAR</span>';
+      return '<span class="pill blue">'+role+'</span>';
+    }
+
+    function statusPill(status){
+      const map={
+        active:['green','ACTIVA'],
+        unassigned:['gray','SIN ASIGNAR'],
+        blocked:['red','BLOQUEADA']
+      };
+      const x=map[status]||['gray',status];
+      return '<span class="pill '+x[0]+'">'+x[1]+'</span>';
+    }
+
+    function renderStats(){
+      const tags=getTags(), people=getPeople();
+      $('stats').innerHTML = `
+        <div class="stat"><strong>${tags.length}</strong><span>TAGS</span></div>
+        <div class="stat"><strong>${people.length}</strong><span>PERSONAS</span></div>
+        <div class="stat"><strong>${tags.filter(t=>t.status==='active').length}</strong><span>ACTIVAS</span></div>
+        <div class="stat"><strong>${tags.filter(t=>!t.personId).length}</strong><span>SIN ASIGNAR</span></div>
+      `;
+    }
+
+    function renderTags(){
+      const people=getPeople();
+      const peopleMap=Object.fromEntries(people.map(p=>[p.id,p]));
+      const q=$('tagSearch').value.trim().toLowerCase();
+      const f=$('tagFilter').value;
+      const rows=getTags().filter(t=>{
+        const p=peopleMap[t.personId];
+        const text=(t.id+' '+(p?fullName(p):'')+' '+(t.role||'')).toLowerCase();
+        const okQ=!q||text.includes(q);
+        let okF=true;
+        if(f==='active') okF=t.status==='active';
+        if(f==='unassigned') okF=!t.personId||t.status==='unassigned';
+        if(f==='blocked') okF=t.status==='blocked';
+        return okQ&&okF;
+      }).map(t=>{
+        const p=peopleMap[t.personId];
+        return `
+          <tr>
+            <td><strong>${t.id}</strong></td>
+            <td>${p?fullName(p):'<span class="muted">Sin asignar</span>'}</td>
+            <td>${rolePill(t.role)}</td>
+            <td>${statusPill(t.status)}</td>
+            <td>
+              <button class="btn small" onclick="toggleTag('${t.id}')">${t.status==='blocked'?'Activar':'Bloquear'}</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+      $('tagsBody').innerHTML=rows||'<tr><td colspan="5" class="muted">No hay resultados.</td></tr>';
+    }
+
+    function renderPeople(){
+      const tags=getTags();
+      const tagByPerson={};
+      tags.forEach(t=>{if(t.personId) tagByPerson[t.personId]=t.id});
+      $('peopleBody').innerHTML=getPeople().map(p=>`
+        <tr>
+          <td><strong>${fullName(p)}</strong><br><span class="muted">${p.email||''}</span></td>
+          <td>${rolePill(p.role)}</td>
+          <td>${p.phone||'-'}</td>
+          <td>${tagByPerson[p.id]||'<span class="muted">Sin TAG</span>'}</td>
+          <td><span class="pill green">ALTA</span></td>
+          <td><button class="btn small" onclick="openRoleProfileModal('${p.id}')">Editar ficha</button></td>
+        </tr>
+      `).join('')||'<tr><td colspan="6" class="muted">No hay personas.</td></tr>';
+    }
+
+    function fillPersonSelect(){
+      const list=getPeople();
+      $('tagPerson').innerHTML='<option value="">Sin asignar</option>'+
+        list.map(p=>`<option value="${p.id}">${fullName(p)} · ${p.role}</option>`).join('');
+    }
+
+    function openTagModal(){
+      fillPersonSelect();
+      $('tagId').value='';
+      $('tagRole').value='';
+      $('tagPerson').value='';
+      $('tagStatus').value='active';
+      $('tagModal').classList.add('show');
+    }
+    function closeTagModal(){ $('tagModal').classList.remove('show'); }
+
+    function saveTag(){
+      const id=$('tagId').value.trim().toUpperCase();
+      if(!id){alert('Introduce un ID de TAG.');return}
+      const tags=getTags();
+      if(tags.some(t=>t.id===id)){alert('Ese ID ya existe.');return}
+      const personId=$('tagPerson').value;
+      let role=$('tagRole').value;
+      if(personId&&!role){
+        const p=getPeople().find(x=>x.id===personId);
+        if(p) role=p.role;
+      }
+      tags.push({
+        id,
+        personId,
+        role,
+        status:$('tagStatus').value
+      });
+      saveTags(tags);
+      closeTagModal();
+      renderAll();
+    }
+
+    function toggleTag(id){
+      const tags=getTags();
+      const t=tags.find(x=>x.id===id);
+      if(!t)return;
+      t.status=t.status==='blocked'?'active':'blocked';
+      saveTags(tags);
+      renderAll();
+    }
+
+    function openPersonModal(){
+      $('pName').value='';
+      $('pSurname').value='';
+      $('pRole').value='OFICIAL';
+      $('pPhone').value='';
+      $('pEmail').value='';
+      $('personModal').classList.add('show');
+    }
+    function closePersonModal(){ $('personModal').classList.remove('show'); }
+
+    function savePerson(){
+      const name=$('pName').value.trim();
+      const surname=$('pSurname').value.trim();
+      if(!name||!surname){alert('Introduce nombre y apellidos.');return}
+      const people=getPeople();
+      people.push({
+        id:'P-'+String(Date.now()).slice(-8),
+        name,
+        surname,
+        role:$('pRole').value,
+        phone:$('pPhone').value.trim(),
+        email:$('pEmail').value.trim()
+      });
+      savePeople(people);
+      closePersonModal();
+      renderAll();
+    }
+
+
+    function getProfiles(){
+      return JSON.parse(localStorage.getItem(STORAGE.profiles) || '{}');
+    }
+
+    function saveProfiles(data){
+      localStorage.setItem(STORAGE.profiles, JSON.stringify(data));
+    }
+
+
+    function openRoleProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+      if(person.role==='PRENSA'){
+        openPressProfileModal(personId);
+      }else{
+        openProfileModal(personId);
+      }
+    }
+
+    function openPressProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+      const profiles=getProfiles();
+      const x=profiles[personId] || {};
+      const p=x.press || {};
+
+      $('pressPersonId').value=personId;
+      $('pressPersonName').textContent=fullName(person)+' · PRENSA';
+
+      $('pressMedia').value=p.media||'';
+      $('pressType').value=p.type||'';
+      $('pressAccreditation').value=p.accreditation||'';
+      $('pressFunction').value=p.function||'';
+      $('pressVehicle').value=p.vehicle||'';
+      $('pressPlate').value=p.plate||'';
+      $('pressParking').value=p.parking||'';
+
+      $('zonePressRoom').checked=!!p.zones?.pressRoom;
+      $('zoneServicePark').checked=!!p.zones?.servicePark;
+      $('zoneStart').checked=!!p.zones?.start;
+      $('zoneFinish').checked=!!p.zones?.finish;
+      $('zoneStagePress').checked=!!p.zones?.stagePress;
+      $('zonePodium').checked=!!p.zones?.podium;
+
+      $('pressHotel').value=p.hotel||'';
+      $('pressRoom').value=p.room||'';
+      $('pressCheckin').value=p.checkin||'';
+      $('pressCheckout').value=p.checkout||'';
+      $('pressHotelAddress').value=p.hotelAddress||'';
+
+      $('pressMealFriDinner').checked=!!p.meals?.friDinner;
+      $('pressMealSatBreakfast').checked=!!p.meals?.satBreakfast;
+      $('pressMealSatLunch').checked=!!p.meals?.satLunch;
+      $('pressMealSatDinner').checked=!!p.meals?.satDinner;
+      $('pressMealSunBreakfast').checked=!!p.meals?.sunBreakfast;
+      $('pressMealSunLunch').checked=!!p.meals?.sunLunch;
+
+      $('pressNotes').value=p.notes||'';
+      $('pressProfileModal').classList.add('show');
+    }
+
+    function closePressProfileModal(){
+      $('pressProfileModal').classList.remove('show');
+    }
+
+    function savePressProfile(){
+      const personId=$('pressPersonId').value;
+      if(!personId) return;
+
+      const profiles=getProfiles();
+      const existing=profiles[personId] || {};
+
+      existing.press={
+        media:$('pressMedia').value.trim(),
+        type:$('pressType').value,
+        accreditation:$('pressAccreditation').value.trim(),
+        function:$('pressFunction').value.trim(),
+        vehicle:$('pressVehicle').value.trim(),
+        plate:$('pressPlate').value.trim(),
+        parking:$('pressParking').value.trim(),
+        zones:{
+          pressRoom:$('zonePressRoom').checked,
+          servicePark:$('zoneServicePark').checked,
+          start:$('zoneStart').checked,
+          finish:$('zoneFinish').checked,
+          stagePress:$('zoneStagePress').checked,
+          podium:$('zonePodium').checked
+        },
+        hotel:$('pressHotel').value.trim(),
+        room:$('pressRoom').value.trim(),
+        checkin:$('pressCheckin').value,
+        checkout:$('pressCheckout').value,
+        hotelAddress:$('pressHotelAddress').value.trim(),
+        meals:{
+          friDinner:$('pressMealFriDinner').checked,
+          satBreakfast:$('pressMealSatBreakfast').checked,
+          satLunch:$('pressMealSatLunch').checked,
+          satDinner:$('pressMealSatDinner').checked,
+          sunBreakfast:$('pressMealSunBreakfast').checked,
+          sunLunch:$('pressMealSunLunch').checked
+        },
+        notes:$('pressNotes').value.trim()
+      };
+
+      profiles[personId]=existing;
+      saveProfiles(profiles);
+      closePressProfileModal();
+      alert('Ficha de prensa guardada.');
+    }
+
+    function openProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+      const profiles=getProfiles();
+      const x=profiles[personId] || {};
+      $('profilePersonId').value=personId;
+      $('profilePersonName').textContent=fullName(person)+' · '+person.role;
+      $('profLicense').value=x.license||'';
+      $('profSpecialty').value=x.specialty||'';
+      $('profPost').value=x.post||'';
+      $('profLocation').value=x.location||'';
+      $('profStart').value=x.start||'';
+      $('profEnd').value=x.end||'';
+      $('profHotel').value=x.hotel||'';
+      $('profRoom').value=x.room||'';
+      $('profCheckin').value=x.checkin||'';
+      $('profCheckout').value=x.checkout||'';
+      $('profHotelAddress').value=x.hotelAddress||'';
+      $('mealFriDinner').checked=!!x.meals?.friDinner;
+      $('mealSatBreakfast').checked=!!x.meals?.satBreakfast;
+      $('mealSatLunch').checked=!!x.meals?.satLunch;
+      $('mealSatDinner').checked=!!x.meals?.satDinner;
+      $('mealSunBreakfast').checked=!!x.meals?.sunBreakfast;
+      $('mealSunLunch').checked=!!x.meals?.sunLunch;
+      $('profNotes').value=x.notes||'';
+      $('profileModal').classList.add('show');
+    }
+
+    function closeProfileModal(){
+      $('profileModal').classList.remove('show');
+    }
+
+    function saveProfile(){
+      const personId=$('profilePersonId').value;
+      if(!personId) return;
+      const profiles=getProfiles();
+      profiles[personId]={
+        license:$('profLicense').value.trim(),
+        specialty:$('profSpecialty').value.trim(),
+        post:$('profPost').value.trim(),
+        location:$('profLocation').value.trim(),
+        start:$('profStart').value,
+        end:$('profEnd').value,
+        hotel:$('profHotel').value.trim(),
+        room:$('profRoom').value.trim(),
+        checkin:$('profCheckin').value,
+        checkout:$('profCheckout').value,
+        hotelAddress:$('profHotelAddress').value.trim(),
+        meals:{
+          friDinner:$('mealFriDinner').checked,
+          satBreakfast:$('mealSatBreakfast').checked,
+          satLunch:$('mealSatLunch').checked,
+          satDinner:$('mealSatDinner').checked,
+          sunBreakfast:$('mealSunBreakfast').checked,
+          sunLunch:$('mealSunLunch').checked
+        },
+        notes:$('profNotes').value.trim()
+      };
+      saveProfiles(profiles);
+      closeProfileModal();
+      alert('Ficha guardada.');
+    }
+
+    function renderAll(){
+      renderStats();
+      renderTags();
+      renderPeople();
+    }
+
+    seed();
+    renderAll();
+  </script>
+</body>
+</html>
+
       --panel2:#151b24;
       --text:#f5f7fb;
       --muted:#9fa7b2;

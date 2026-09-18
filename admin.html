@@ -330,6 +330,22 @@
       </div>
 
       <div class="card">
+        <div class="toolbar">
+          <input id="peopleSearch" class="grow" placeholder="Buscar nombre, teléfono, email o TAG..." oninput="renderPeople()">
+
+          <select id="peopleRoleFilter" onchange="renderPeople()">
+            <option value="ALL">Todos los perfiles</option>
+            <option value="OFICIAL">Oficial</option>
+            <option value="PRENSA">Prensa</option>
+            <option value="PARTICIPANTE">Participante</option>
+            <option value="ASISTENCIA">Asistencia</option>
+            <option value="ORGANIZACIÓN">Organización</option>
+            <option value="VIP">VIP</option>
+          </select>
+        </div>
+
+        <div id="peopleFilterSummary" class="muted" style="margin:0 0 10px;font-size:.82rem"></div>
+
         <div class="table-wrap">
           <table>
             <thead>
@@ -1135,10 +1151,41 @@
     }
 
     function renderPeople(){
+      const people=getPeople();
       const tags=getTags();
+
       const tagByPerson={};
-      tags.forEach(t=>{if(t.personId) tagByPerson[t.personId]=t.id});
-      $('peopleBody').innerHTML=getPeople().map(p=>`
+      tags.forEach(t=>{
+        if(t.personId) tagByPerson[t.personId]=t.id;
+      });
+
+      const q=($('peopleSearch')?.value||'').trim().toLowerCase();
+      const roleFilter=$('peopleRoleFilter')?.value||'ALL';
+
+      const filtered=people.filter(p=>{
+        const tag=tagByPerson[p.id]||'';
+        const haystack=[
+          p.name,
+          p.surname,
+          p.role,
+          p.phone,
+          p.email,
+          tag
+        ].filter(Boolean).join(' ').toLowerCase();
+
+        const matchesSearch=!q || haystack.includes(q);
+        const matchesRole=roleFilter==='ALL' || p.role===roleFilter;
+
+        return matchesSearch && matchesRole;
+      });
+
+      if($('peopleFilterSummary')){
+        const roleText=roleFilter==='ALL' ? 'todos los perfiles' : roleFilter;
+        $('peopleFilterSummary').textContent=
+          `${filtered.length} persona${filtered.length===1?'':'s'} · ${roleText}`;
+      }
+
+      $('peopleBody').innerHTML=filtered.map(p=>`
         <tr>
           <td><strong>${fullName(p)}</strong><br><span class="muted">${p.email||''}</span></td>
           <td>${rolePill(p.role)}</td>
@@ -1147,7 +1194,7 @@
           <td><span class="pill green">ALTA</span></td>
           <td><button class="btn small" onclick="openRoleProfileModal('${p.id}')">Editar ficha</button></td>
         </tr>
-      `).join('')||'<tr><td colspan="6" class="muted">No hay personas.</td></tr>';
+      `).join('')||'<tr><td colspan="6" class="muted">No hay personas que coincidan con el filtro.</td></tr>';
     }
 
     function fillPersonSelect(){

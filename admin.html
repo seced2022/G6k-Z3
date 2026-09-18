@@ -940,6 +940,84 @@
     </div>
   </div>
 
+
+  <!-- MODAL FICHA ORGANIZACIÓN -->
+  <div id="organizationProfileModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Ficha de organización</h3>
+          <div id="organizationPersonName" class="muted" style="margin-top:4px"></div>
+        </div>
+        <button class="btn small" onclick="closeOrganizationProfileModal()">Cerrar</button>
+      </div>
+
+      <input id="organizationPersonId" type="hidden">
+
+      <div class="form-grid">
+        <label>Licencia / acreditación
+          <input id="orgLicense" placeholder="Ej. ORG-001">
+        </label>
+
+        <label>Función
+          <input id="orgSpecialty" placeholder="Ej. Dirección de carrera">
+        </label>
+
+        <label>Puesto asignado
+          <input id="orgPost" placeholder="Ej. Secretaría / Dirección">
+        </label>
+
+        <label>Ubicación
+          <input id="orgLocation" placeholder="Ej. Parque de asistencia">
+        </label>
+
+        <label>Hora de presentación
+          <input id="orgStart" type="time">
+        </label>
+
+        <label>Fin estimado
+          <input id="orgEnd" type="time">
+        </label>
+
+        <label class="full">Alojamiento
+          <input id="orgHotel" placeholder="Nombre del hotel / alojamiento">
+        </label>
+
+        <label>Habitación
+          <input id="orgRoom" placeholder="Ej. 204">
+        </label>
+
+        <label>Entrada alojamiento
+          <input id="orgCheckin" type="date">
+        </label>
+
+        <label>Salida alojamiento
+          <input id="orgCheckout" type="date">
+        </label>
+
+        <label class="full">Dirección del alojamiento
+          <input id="orgHotelAddress" placeholder="Dirección">
+        </label>
+
+        <label class="full">Documentos visibles
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin:6px 0 8px">
+            <button type="button" class="btn small" onclick="setAllOrganizationDocs(true)">Marcar todos</button>
+            <button type="button" class="btn small" onclick="setAllOrganizationDocs(false)">Ninguno</button>
+          </div>
+          <div id="organizationDocsList" style="display:grid;grid-template-columns:1fr;gap:8px"></div>
+        </label>
+
+        <label class="full">Notas / instrucciones
+          <textarea id="orgNotes" rows="4" placeholder="Información operativa para esta persona..."></textarea>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" onclick="saveOrganizationProfile()">Guardar ficha de organización</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE = {
       tags: 'g6k_z3_admin_tags',
@@ -1243,6 +1321,8 @@
         openPressProfileModal(personId);
       }else if(person.role==='PARTICIPANTE'){
         openParticipantProfileModal(personId);
+      }else if(person.role==='ORGANIZACIÓN'){
+        openOrganizationProfileModal(personId);
       }else{
         openProfileModal(personId);
       }
@@ -1441,6 +1521,96 @@
       saveProfiles(profiles);
       closeParticipantProfileModal();
       alert('Ficha de participante guardada.');
+    }
+
+
+    function renderOrganizationDocumentSelector(selectedIds=[]){
+      const docs=getDocuments();
+      const selected=new Set(selectedIds || []);
+      const catLabel={ROADBOOK:'Roadbook',TC:'TC / Tramos',TABLON:'Tablón'};
+
+      if(!docs.length){
+        $('organizationDocsList').innerHTML='<div class="muted">Todavía no hay documentos subidos en ADMIN &gt; DOCUMENTOS.</div>';
+        return;
+      }
+
+      $('organizationDocsList').innerHTML=docs
+        .slice()
+        .sort((a,b)=>b.createdAt.localeCompare(a.createdAt))
+        .map(d=>`
+          <label class="checkbox-line" style="display:flex;align-items:flex-start;gap:9px;padding:10px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:#090c11">
+            <input type="checkbox" class="org-doc-checkbox" value="${d.id}" ${selected.has(d.id)?'checked':''} style="width:auto;margin-top:2px">
+            <span>
+              <strong>${d.title}</strong>
+              <span class="muted" style="display:block;font-size:.76rem;margin-top:2px">${catLabel[d.category]||d.category} · ${d.fileName||''}</span>
+            </span>
+          </label>
+        `).join('');
+    }
+
+    function setAllOrganizationDocs(value){
+      document.querySelectorAll('.org-doc-checkbox').forEach(cb=>cb.checked=value);
+    }
+
+    function openOrganizationProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+
+      const profiles=getProfiles();
+      const existing=profiles[personId] || {};
+      const p=existing.organization || {};
+
+      $('organizationPersonId').value=personId;
+      $('organizationPersonName').textContent=fullName(person)+' · ORGANIZACIÓN';
+
+      $('orgLicense').value=p.license||'';
+      $('orgSpecialty').value=p.specialty||'';
+      $('orgPost').value=p.post||'';
+      $('orgLocation').value=p.location||'';
+      $('orgStart').value=p.start||'';
+      $('orgEnd').value=p.end||'';
+      $('orgHotel').value=p.hotel||'';
+      $('orgRoom').value=p.room||'';
+      $('orgCheckin').value=p.checkin||'';
+      $('orgCheckout').value=p.checkout||'';
+      $('orgHotelAddress').value=p.hotelAddress||'';
+      $('orgNotes').value=p.notes||'';
+
+      renderOrganizationDocumentSelector(p.allowedDocIds||[]);
+      $('organizationProfileModal').classList.add('show');
+    }
+
+    function closeOrganizationProfileModal(){
+      $('organizationProfileModal').classList.remove('show');
+    }
+
+    function saveOrganizationProfile(){
+      const personId=$('organizationPersonId').value;
+      if(!personId) return;
+
+      const profiles=getProfiles();
+      const existing=profiles[personId] || {};
+
+      existing.organization={
+        license:$('orgLicense').value.trim(),
+        specialty:$('orgSpecialty').value.trim(),
+        post:$('orgPost').value.trim(),
+        location:$('orgLocation').value.trim(),
+        start:$('orgStart').value,
+        end:$('orgEnd').value,
+        hotel:$('orgHotel').value.trim(),
+        room:$('orgRoom').value.trim(),
+        checkin:$('orgCheckin').value,
+        checkout:$('orgCheckout').value,
+        hotelAddress:$('orgHotelAddress').value.trim(),
+        allowedDocIds:[...document.querySelectorAll('.org-doc-checkbox:checked')].map(cb=>cb.value),
+        notes:$('orgNotes').value.trim()
+      };
+
+      profiles[personId]=existing;
+      saveProfiles(profiles);
+      closeOrganizationProfileModal();
+      alert('Ficha de organización guardada.');
     }
 
     function openProfileModal(personId){

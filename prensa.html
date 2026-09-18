@@ -3,7 +3,327 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#050608" /><!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="theme-color" content="#050608" />
+  <title>PRENSA · G6k-Z3</title>
+  <style>
+    :root{
+      --bg:#050608;--panel:#0d1117;--text:#f5f7fb;--muted:#9fa7b2;
+      --accent:#ff7a00;--green:#2bd27f;--red:#ff5a63;--blue:#5ca9ff;
+      --line:rgba(255,255,255,.09);--shadow:0 18px 55px rgba(0,0,0,.48);
+    }
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{
+      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(circle at 85% 0%,rgba(255,122,0,.11),transparent 25%),
+        radial-gradient(circle at 0% 35%,rgba(92,169,255,.07),transparent 25%),
+        linear-gradient(180deg,#07090c,#050608 60%);
+    }
+    button,input{font:inherit}
+    input{
+      width:100%;background:#090c11;color:var(--text);border:1px solid rgba(255,255,255,.12);
+      border-radius:13px;padding:12px 13px;outline:none;
+    }
+    input:focus{border-color:var(--accent)}
+    .hidden{display:none!important}
+    .app{
+      width:min(900px,100%);margin:0 auto;
+      padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);
+    }
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .btn{
+      border:1px solid rgba(255,255,255,.1);background:#0d1219;color:var(--text);
+      border-radius:12px;padding:11px 13px;font-weight:850;cursor:pointer;
+    }
+    .brand{font-weight:950;color:var(--accent);letter-spacing:.08em}
+    .hero{padding:20px 0 18px;border-bottom:1px solid var(--line);margin-bottom:16px}
+    .eyebrow{color:var(--accent);font-size:.75rem;font-weight:900;letter-spacing:.18em}
+    h1{margin:6px 0 6px;font-size:clamp(2.2rem,7vw,4rem);letter-spacing:-.04em}
+    .hero p{margin:0;color:var(--muted)}
+    .lookup,.card{
+      background:linear-gradient(180deg,rgba(18,24,33,.97),rgba(10,14,19,.97));
+      border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;
+    }
+    .lookup-row{display:flex;gap:10px}
+    .lookup-row input{flex:1}
+    .lookup-row .btn{background:var(--accent);color:#111;border-color:transparent}
+    .identity{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .identity h2{margin:0 0 4px;font-size:1.45rem}
+    .identity p{margin:0;color:var(--muted)}
+    .pill{
+      display:inline-block;padding:6px 9px;border-radius:999px;font-size:.72rem;font-weight:900;
+      background:rgba(43,210,127,.12);color:#85efb4;white-space:nowrap;
+    }
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .mini{
+      padding:15px;border-radius:16px;border:1px solid var(--line);background:#0a0e14;
+    }
+    .mini .label{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+    .mini strong{display:block;margin-top:6px;font-size:1.02rem}
+    .section-title{margin:0 0 12px;font-size:1.05rem}
+    .zone-list,.meal-list{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+    .zone,.meal{
+      padding:11px 12px;border-radius:14px;border:1px solid var(--line);background:#0a0e14;
+      display:flex;justify-content:space-between;gap:10px;align-items:center;
+    }
+    .zone.ok,.meal.ok{border-color:rgba(43,210,127,.25)}
+    .zone.no,.meal.no{opacity:.43}
+    .status-ok{color:#86efb5;font-weight:900}
+    .status-no{color:#808894;font-weight:800}
+    .notice{
+      padding:13px 14px;border-radius:15px;background:rgba(255,122,0,.08);
+      border:1px solid rgba(255,122,0,.22);color:#ffc188;line-height:1.45;
+    }
+    .muted{color:var(--muted)}
+    .footer{margin-top:24px;text-align:center;color:#78818c;font-size:.78rem;letter-spacing:.08em}
+    @media(max-width:650px){
+      .grid,.zone-list,.meal-list{grid-template-columns:1fr}
+      .lookup-row{flex-direction:column}
+      .identity{flex-direction:column}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="topbar">
+      <button class="btn" onclick="location.href='index.html'">← Inicio</button>
+      <div class="brand">G6K® · Z3</div>
+    </div>
+
+    <section class="hero">
+      <div class="eyebrow">MÓDULO</div>
+      <h1>PRENSA</h1>
+      <p>Acreditación, accesos e información del profesional de prensa.</p>
+    </section>
+
+    <section id="lookupBox" class="lookup">
+      <div style="font-weight:900;margin-bottom:8px">Modo de prueba</div>
+      <div class="muted" style="font-size:.86rem;margin-bottom:12px">
+        Introduce el ID de una TAG asignada a PRENSA. Más adelante se abrirá automáticamente al leer la TAG.
+      </div>
+      <div class="lookup-row">
+        <input id="tagLookup" placeholder="Ej. Z3-000002">
+        <button class="btn" onclick="loadByTag()">Entrar</button>
+      </div>
+      <div id="lookupError" class="muted" style="margin-top:10px"></div>
+    </section>
+
+    <section id="pressContent" class="hidden">
+      <div class="card">
+        <div class="identity">
+          <div>
+            <h2 id="pName">—</h2>
+            <p id="pContact">PRENSA</p>
+          </div>
+          <span class="pill">ACREDITACIÓN ACTIVA</span>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="mini">
+          <div class="label">Medio</div>
+          <strong id="pMedia">—</strong>
+        </div>
+        <div class="mini">
+          <div class="label">Tipo de profesional</div>
+          <strong id="pType">—</strong>
+        </div>
+        <div class="mini">
+          <div class="label">Nº acreditación</div>
+          <strong id="pAccreditation">—</strong>
+        </div>
+        <div class="mini">
+          <div class="label">Función</div>
+          <strong id="pFunction">—</strong>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="card">
+        <h3 class="section-title">🚗 Vehículo / parking</h3>
+        <div class="grid">
+          <div class="mini">
+            <div class="label">Vehículo</div>
+            <strong id="pVehicle">No indicado</strong>
+          </div>
+          <div class="mini">
+            <div class="label">Matrícula</div>
+            <strong id="pPlate">—</strong>
+          </div>
+          <div class="mini" style="grid-column:1/-1">
+            <div class="label">Parking asignado</div>
+            <strong id="pParking">No asignado</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">📍 Zonas autorizadas</h3>
+        <div id="zoneList" class="zone-list"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">🏨 Alojamiento</h3>
+        <div class="grid">
+          <div class="mini">
+            <div class="label">Alojamiento</div>
+            <strong id="pHotel">No asignado</strong>
+          </div>
+          <div class="mini">
+            <div class="label">Habitación</div>
+            <strong id="pRoom">—</strong>
+          </div>
+          <div class="mini">
+            <div class="label">Entrada</div>
+            <strong id="pCheckin">—</strong>
+          </div>
+          <div class="mini">
+            <div class="label">Salida</div>
+            <strong id="pCheckout">—</strong>
+          </div>
+        </div>
+        <div id="pHotelAddress" class="muted" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">🍽️ Comidas</h3>
+        <div id="mealList" class="meal-list"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">📢 Avisos / instrucciones</h3>
+        <div id="pNotes" class="notice">Sin instrucciones adicionales.</div>
+      </div>
+    </section>
+
+    <div class="footer">G6K® 2026 · G6k-Z3</div>
+  </main>
+
+  <script>
+    const STORAGE={
+      tags:'g6k_z3_admin_tags',
+      people:'g6k_z3_admin_people',
+      profiles:'g6k_z3_admin_profiles'
+    };
+
+    const $=id=>document.getElementById(id);
+    const read=key=>JSON.parse(localStorage.getItem(key)||(key===STORAGE.profiles?'{}':'[]'));
+
+    function text(id,value,fallback='—'){
+      $(id).textContent=value||fallback;
+    }
+
+    function accessRow(label,ok,kind='zone'){
+      return `
+        <div class="${kind} ${ok?'ok':'no'}">
+          <span>${label}</span>
+          <span class="${ok?'status-ok':'status-no'}">${ok?'✓ AUTORIZADO':'NO AUTORIZADO'}</span>
+        </div>
+      `;
+    }
+
+    function mealRow(label,ok){
+      return `
+        <div class="meal ${ok?'ok':'no'}">
+          <span>${label}</span>
+          <span class="${ok?'status-ok':'status-no'}">${ok?'✓ AUTORIZADA':'NO ASIGNADA'}</span>
+        </div>
+      `;
+    }
+
+    function loadByTag(){
+      const id=$('tagLookup').value.trim().toUpperCase();
+      const tags=read(STORAGE.tags);
+      const people=read(STORAGE.people);
+      const profiles=read(STORAGE.profiles);
+
+      const tag=tags.find(t=>t.id===id);
+      if(!tag){
+        $('lookupError').textContent='TAG no encontrada.';
+        $('pressContent').classList.add('hidden');
+        return;
+      }
+
+      if(tag.status==='blocked'){
+        $('lookupError').textContent='Esta TAG está bloqueada.';
+        $('pressContent').classList.add('hidden');
+        return;
+      }
+
+      const person=people.find(p=>p.id===tag.personId);
+      if(!person){
+        $('lookupError').textContent='La TAG no está asignada a ninguna persona.';
+        $('pressContent').classList.add('hidden');
+        return;
+      }
+
+      if((tag.role||person.role)!=='PRENSA'){
+        $('lookupError').textContent='Esta TAG no corresponde al perfil PRENSA.';
+        $('pressContent').classList.add('hidden');
+        return;
+      }
+
+      const profile=profiles[person.id]||{};
+      const p=profile.press||{};
+
+      $('lookupError').textContent='';
+      text('pName',(person.name+' '+person.surname).trim());
+      text('pContact',[person.email,person.phone].filter(Boolean).join(' · '),'PRENSA');
+      text('pMedia',p.media);
+      text('pType',p.type);
+      text('pAccreditation',p.accreditation);
+      text('pFunction',p.function);
+      text('pVehicle',p.vehicle,'No indicado');
+      text('pPlate',p.plate);
+      text('pParking',p.parking,'No asignado');
+      text('pHotel',p.hotel,'No asignado');
+      text('pRoom',p.room);
+      text('pCheckin',p.checkin);
+      text('pCheckout',p.checkout);
+      $('pHotelAddress').textContent=p.hotelAddress||'';
+      $('pNotes').textContent=p.notes||'Sin instrucciones adicionales.';
+
+      const z=p.zones||{};
+      $('zoneList').innerHTML=
+        accessRow('Sala de prensa',!!z.pressRoom)+
+        accessRow('Parque de asistencia',!!z.servicePark)+
+        accessRow('Zona de salida',!!z.start)+
+        accessRow('Zona de llegada',!!z.finish)+
+        accessRow('Zonas prensa en tramo',!!z.stagePress)+
+        accessRow('Podium / ceremonia',!!z.podium);
+
+      const m=p.meals||{};
+      $('mealList').innerHTML=
+        mealRow('Cena viernes',!!m.friDinner)+
+        mealRow('Desayuno sábado',!!m.satBreakfast)+
+        mealRow('Comida sábado',!!m.satLunch)+
+        mealRow('Cena sábado',!!m.satDinner)+
+        mealRow('Desayuno domingo',!!m.sunBreakfast)+
+        mealRow('Comida domingo',!!m.sunLunch);
+
+      $('pressContent').classList.remove('hidden');
+
+      const url=new URL(window.location.href);
+      url.searchParams.set('tag',id);
+      history.replaceState({},'',url);
+    }
+
+    const initialTag=new URLSearchParams(location.search).get('tag');
+    if(initialTag){
+      $('tagLookup').value=initialTag;
+      loadByTag();
+    }
+  </script>
+</body>
+</html>
+
   <title>PRENSA · G6k-Z3</title>
   <style>
     :root {

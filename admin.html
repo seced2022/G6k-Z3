@@ -200,10 +200,76 @@
       .toolbar{flex-wrap:wrap}
       .toolbar .grow{flex:1 1 100%}
     }
+  
+    .auth-screen{
+      position:fixed;inset:0;z-index:9999;
+      display:grid;place-items:center;
+      padding:18px;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(255,122,0,.16),transparent 32%),
+        #050608;
+    }
+    .auth-card{
+      width:min(430px,100%);
+      padding:22px;
+      border-radius:24px;
+      background:linear-gradient(180deg,#171d26,#0b0f15);
+      border:1px solid rgba(255,255,255,.10);
+      box-shadow:0 24px 80px rgba(0,0,0,.58);
+    }
+    .auth-logo{
+      width:64px;height:64px;border-radius:18px;
+      display:grid;place-items:center;
+      margin-bottom:18px;
+      background:var(--accent);
+      color:#111;font-weight:1000;font-size:1.25rem;
+    }
+    .auth-card h1{font-size:1.7rem;margin:0 0 5px}
+    .auth-card p{color:var(--muted);margin:0 0 18px;line-height:1.45}
+    .auth-fields{display:grid;gap:11px}
+    .auth-error{
+      min-height:20px;
+      color:#ff9198;
+      font-size:.83rem;
+      margin-top:10px;
+    }
+    .firebase-state{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:7px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      color:var(--muted);font-size:.75rem;font-weight:850;
+      background:#0b0f15;
+    }
+    .firebase-state.online{color:#85efb4;border-color:rgba(43,210,127,.25)}
+    .firebase-state.offline{color:#ff9b9f;border-color:rgba(255,90,99,.25)}
+
   </style>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
 </head>
 <body>
-  <main class="app">
+  
+  <section id="authScreen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-logo">G6K</div>
+      <h1>ADMIN · G6k-Z3</h1>
+      <p>Acceso reservado a administración. Inicia sesión con una cuenta creada en Firebase Authentication.</p>
+
+      <div class="auth-fields">
+        <input id="loginEmail" type="email" autocomplete="username" placeholder="Correo electrónico">
+        <input id="loginPassword" type="password" autocomplete="current-password" placeholder="Contraseña">
+        <button class="btn primary" onclick="firebaseLogin()">Entrar en ADMIN</button>
+      </div>
+
+      <div id="authError" class="auth-error"></div>
+    </div>
+  </section>
+
+  <main id="adminApp" class="app" style="display:none">
     <div class="topbar">
       <div class="brand-block">
         <div class="logo">G6K</div>
@@ -212,8 +278,10 @@
           <div class="brand-sub">Centro de gestión del evento</div>
         </div>
       </div>
-      <div class="top-actions">
+      <div class="top-actions" style="align-items:center;flex-wrap:wrap;justify-content:flex-end">
+        <span id="firebaseState" class="firebase-state">Firebase: conectando…</span>
         <button class="btn small" onclick="location.href='index.html'">Ver app</button>
+        <button class="btn small danger" onclick="firebaseLogout()">Salir</button>
       </div>
     </div>
 
@@ -542,6 +610,36 @@
           <p>Datos generales del evento y parámetros del sistema.</p>
         </div>
       </div>
+
+      <div class="card">
+        <div class="panel-head" style="margin-bottom:12px">
+          <div>
+            <h2 style="font-size:1.05rem">Firebase</h2>
+            <p>Sincronización de los datos del evento Rallye Valle del Guadiato 2026.</p>
+          </div>
+        </div>
+
+        <div class="section-grid">
+          <div class="mini-card">
+            <h3>Base de datos</h3>
+            <p id="firebaseInfo">Esperando conexión…</p>
+          </div>
+          <div class="mini-card">
+            <h3>Sesión</h3>
+            <p id="firebaseUserInfo">Sin sesión.</p>
+          </div>
+        </div>
+
+        <div class="actions-row" style="flex-wrap:wrap">
+          <button class="btn" onclick="reloadFirebaseData()">Recargar desde Firebase</button>
+          <button class="btn primary" onclick="uploadLocalDataToFirebase()">Subir datos actuales a Firebase</button>
+        </div>
+
+        <div class="notice" style="margin-top:12px;margin-bottom:0">
+          Durante esta transición se mantiene una copia local en el navegador. Firebase será la fuente compartida entre equipos.
+        </div>
+      </div>
+
       <div class="card">
         <div class="form-grid">
           <label>Nombre del evento
@@ -1105,6 +1203,201 @@
   </div>
 
   <script>
+
+    // ============================================================
+    // FIREBASE · G6k-Z3 v14
+    // ============================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_vcPOimDMu4hLxe6mb0B0hZ85ZJwSYTA",
+      authDomain: "g6k-z3.firebaseapp.com",
+      databaseURL: "https://g6k-z3-default-rtdb.europe-west1.firebasedatabase.app/",
+      projectId: "g6k-z3",
+      storageBucket: "g6k-z3.firebasestorage.app",
+      messagingSenderId: "1007699316093",
+      appId: "1:1007699316093:web:1d00b1f102fd43acb91014"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    const fbAuth=firebase.auth();
+    const fbDb=firebase.database();
+    const FIREBASE_EVENT_PATH='events/guadiato-2026';
+    const ALLOWED_ADMIN_UID='vAU0N9YTYiR4c8rIY95kIpPFPmY2';
+
+    let firebaseReady=false;
+    let firebaseUser=null;
+    let firebaseHydrating=false;
+
+    function setFirebaseState(text, online=false){
+      const el=document.getElementById('firebaseState');
+      if(!el) return;
+      el.textContent=text;
+      el.classList.toggle('online',!!online);
+      el.classList.toggle('offline',!online);
+    }
+
+    function firebaseWrite(section, value){
+      if(!firebaseReady || !firebaseUser || firebaseHydrating) return;
+
+      fbDb.ref(`${FIREBASE_EVENT_PATH}/${section}`).set(value).catch(err=>{
+        console.error('Firebase write error:', section, err);
+        setFirebaseState('Firebase: error al guardar', false);
+      });
+    }
+
+    async function loadFirebaseData(){
+      if(!firebaseUser) return;
+
+      setFirebaseState('Firebase: sincronizando…', false);
+
+      try{
+        firebaseHydrating=true;
+
+        const snap=await fbDb.ref(FIREBASE_EVENT_PATH).once('value');
+        const data=snap.val();
+
+        if(data){
+          if(data.people!==undefined){
+            localStorage.setItem(STORAGE.people, JSON.stringify(data.people || []));
+          }
+          if(data.tags!==undefined){
+            localStorage.setItem(STORAGE.tags, JSON.stringify(data.tags || []));
+          }
+          if(data.profiles!==undefined){
+            localStorage.setItem(STORAGE.profiles, JSON.stringify(data.profiles || {}));
+          }
+          if(data.documents!==undefined){
+            localStorage.setItem(STORAGE.documents, JSON.stringify(data.documents || []));
+          }
+
+          if(document.getElementById('firebaseInfo')){
+            document.getElementById('firebaseInfo').textContent='Datos cargados desde Realtime Database.';
+          }
+        }else{
+          if(document.getElementById('firebaseInfo')){
+            document.getElementById('firebaseInfo').textContent='La base de datos está vacía. Puedes subir los datos actuales con el botón inferior.';
+          }
+        }
+
+        seed();
+        renderAll();
+
+        firebaseReady=true;
+        setFirebaseState('Firebase: conectado', true);
+      }catch(err){
+        console.error(err);
+        setFirebaseState('Firebase: acceso denegado/error', false);
+
+        if(document.getElementById('firebaseInfo')){
+          document.getElementById('firebaseInfo').textContent=
+            'No se pudo leer Realtime Database. Revisa las reglas de Firebase.';
+        }
+
+        seed();
+        renderAll();
+      }finally{
+        firebaseHydrating=false;
+      }
+    }
+
+    async function reloadFirebaseData(){
+      await loadFirebaseData();
+      alert('Datos recargados desde Firebase.');
+    }
+
+    async function uploadLocalDataToFirebase(){
+      if(!firebaseUser){
+        alert('No hay una sesión de administrador activa.');
+        return;
+      }
+
+      const payload={
+        people:getPeople(),
+        tags:getTags(),
+        profiles:getProfiles(),
+        documents:getDocuments()
+      };
+
+      if(!confirm(
+        'Se van a subir a Firebase los datos que tienes actualmente en este navegador.\\n\\n'+
+        'Esto sustituirá los datos del evento que existan ahora mismo en Firebase.\\n\\n¿Continuar?'
+      )) return;
+
+      try{
+        await fbDb.ref(FIREBASE_EVENT_PATH).set(payload);
+        firebaseReady=true;
+        setFirebaseState('Firebase: conectado', true);
+        if(document.getElementById('firebaseInfo')){
+          document.getElementById('firebaseInfo').textContent='Datos locales subidos correctamente a Firebase.';
+        }
+        alert('Datos subidos correctamente a Firebase.');
+      }catch(err){
+        console.error(err);
+        alert('Firebase no permitió guardar los datos. Revisa las reglas de Realtime Database.');
+      }
+    }
+
+    async function firebaseLogin(){
+      const email=(document.getElementById('loginEmail').value||'').trim();
+      const password=document.getElementById('loginPassword').value||'';
+      const errorEl=document.getElementById('authError');
+      errorEl.textContent='';
+
+      if(!email || !password){
+        errorEl.textContent='Introduce correo y contraseña.';
+        return;
+      }
+
+      try{
+        await fbAuth.signInWithEmailAndPassword(email,password);
+      }catch(err){
+        console.error(err);
+        const map={
+          'auth/invalid-credential':'Correo o contraseña incorrectos.',
+          'auth/user-not-found':'Usuario no encontrado.',
+          'auth/wrong-password':'Contraseña incorrecta.',
+          'auth/too-many-requests':'Demasiados intentos. Prueba más tarde.',
+          'auth/unauthorized-domain':'Este dominio todavía no está autorizado en Firebase Authentication.'
+        };
+        errorEl.textContent=map[err.code] || ('No se pudo iniciar sesión: '+err.code);
+      }
+    }
+
+    function firebaseLogout(){
+      fbAuth.signOut();
+    }
+
+    fbAuth.onAuthStateChanged(async user=>{
+      firebaseUser=user || null;
+
+      if(user){
+        if(user.uid !== ALLOWED_ADMIN_UID){
+          firebaseReady=false;
+          document.getElementById('adminApp').style.display='none';
+          document.getElementById('authScreen').style.display='grid';
+          document.getElementById('authError').textContent='Esta cuenta no tiene permisos de administrador.';
+          setFirebaseState('Firebase: acceso no autorizado', false);
+          await fbAuth.signOut();
+          return;
+        }
+
+        document.getElementById('authScreen').style.display='none';
+        document.getElementById('adminApp').style.display='block';
+
+        if(document.getElementById('firebaseUserInfo')){
+          document.getElementById('firebaseUserInfo').textContent=(user.email || 'ADMIN')+' · UID autorizado';
+        }
+
+        await loadFirebaseData();
+      }else{
+        firebaseReady=false;
+        document.getElementById('adminApp').style.display='none';
+        document.getElementById('authScreen').style.display='grid';
+        setFirebaseState('Firebase: sin sesión', false);
+      }
+    });
+
+
     const STORAGE = {
       tags: 'g6k_z3_admin_tags',
       people: 'g6k_z3_admin_people',
@@ -1120,6 +1413,7 @@
 
     function savePeople(list){
       localStorage.setItem(STORAGE.people, JSON.stringify(list));
+      firebaseWrite('people', list);
     }
 
     function getTags(){
@@ -1128,6 +1422,7 @@
 
     function saveTags(list){
       localStorage.setItem(STORAGE.tags, JSON.stringify(list));
+      firebaseWrite('tags', list);
     }
 
     function seed(){
@@ -1428,6 +1723,7 @@
 
     function saveProfiles(data){
       localStorage.setItem(STORAGE.profiles, JSON.stringify(data));
+      firebaseWrite('profiles', data);
     }
 
 
@@ -1882,6 +2178,7 @@
 
     function saveDocuments(list){
       localStorage.setItem(STORAGE.documents, JSON.stringify(list));
+      firebaseWrite('documents', list);
     }
 
     function renderDocuments(){
@@ -1983,8 +2280,7 @@
       renderDocuments();
     }
 
-    seed();
-    renderAll();
+    // El render inicial se realiza después de autenticar y sincronizar Firebase.
   </script>
 </body>
 </html>

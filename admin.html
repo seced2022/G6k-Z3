@@ -548,9 +548,10 @@
   <div id="tagModal" class="modal">
     <div class="modal-card">
       <div class="modal-head">
-        <h3>Nueva TAG</h3>
+        <h3 id="tagModalTitle">Nueva TAG</h3>
         <button class="btn small" onclick="closeTagModal()">Cerrar</button>
       </div>
+      <input id="tagOriginalId" type="hidden">
       <div class="form-grid">
         <label>ID TAG
           <input id="tagId" placeholder="Ej. Z3-000184">
@@ -578,7 +579,7 @@
         </label>
       </div>
       <div class="actions-row">
-        <button class="btn primary" onclick="saveTag()">Guardar TAG</button>
+        <button id="tagSaveButton" class="btn primary" onclick="saveTag()">Guardar TAG</button>
       </div>
     </div>
   </div>
@@ -1043,7 +1044,11 @@
             <td>${rolePill(t.role)}</td>
             <td>${statusPill(t.status)}</td>
             <td>
-              <button class="btn small" onclick="toggleTag('${t.id}')">${t.status==='blocked'?'Activar':'Bloquear'}</button>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn small" onclick="editTag('${t.id}')">Editar</button>
+                <button class="btn small" onclick="toggleTag('${t.id}')">${t.status==='blocked'?'Activar':'Bloquear'}</button>
+                <button class="btn small danger" onclick="deleteTag('${t.id}')">Eliminar</button>
+              </div>
             </td>
           </tr>
         `;
@@ -1075,31 +1080,82 @@
 
     function openTagModal(){
       fillPersonSelect();
+      $('tagOriginalId').value='';
+      $('tagModalTitle').textContent='Nueva TAG';
+      $('tagSaveButton').textContent='Guardar TAG';
       $('tagId').value='';
       $('tagRole').value='';
       $('tagPerson').value='';
       $('tagStatus').value='active';
       $('tagModal').classList.add('show');
     }
-    function closeTagModal(){ $('tagModal').classList.remove('show'); }
+
+    function editTag(id){
+      const tag=getTags().find(t=>t.id===id);
+      if(!tag) return;
+
+      fillPersonSelect();
+
+      $('tagOriginalId').value=tag.id;
+      $('tagModalTitle').textContent='Editar TAG';
+      $('tagSaveButton').textContent='Guardar cambios';
+      $('tagId').value=tag.id;
+      $('tagRole').value=tag.role||'';
+      $('tagPerson').value=tag.personId||'';
+      $('tagStatus').value=tag.status||'active';
+
+      $('tagModal').classList.add('show');
+    }
+
+    function closeTagModal(){
+      $('tagModal').classList.remove('show');
+    }
 
     function saveTag(){
+      const originalId=$('tagOriginalId').value.trim().toUpperCase();
       const id=$('tagId').value.trim().toUpperCase();
-      if(!id){alert('Introduce un ID de TAG.');return}
+
+      if(!id){
+        alert('Introduce un ID de TAG.');
+        return;
+      }
+
       const tags=getTags();
-      if(tags.some(t=>t.id===id)){alert('Ese ID ya existe.');return}
+
+      const duplicate=tags.some(t=>t.id===id && t.id!==originalId);
+      if(duplicate){
+        alert('Ese ID de TAG ya existe.');
+        return;
+      }
+
       const personId=$('tagPerson').value;
       let role=$('tagRole').value;
-      if(personId&&!role){
+
+      // Si hay persona asignada y no se ha elegido perfil manualmente,
+      // usar automáticamente su perfil.
+      if(personId && !role){
         const p=getPeople().find(x=>x.id===personId);
         if(p) role=p.role;
       }
-      tags.push({
+
+      const newData={
         id,
         personId,
         role,
         status:$('tagStatus').value
-      });
+      };
+
+      if(originalId){
+        const index=tags.findIndex(t=>t.id===originalId);
+        if(index===-1){
+          alert('No se ha encontrado la TAG que intentas editar.');
+          return;
+        }
+        tags[index]=newData;
+      }else{
+        tags.push(newData);
+      }
+
       saveTags(tags);
       closeTagModal();
       renderAll();
@@ -1108,11 +1164,39 @@
     function toggleTag(id){
       const tags=getTags();
       const t=tags.find(x=>x.id===id);
-      if(!t)return;
+      if(!t) return;
+
       t.status=t.status==='blocked'?'active':'blocked';
       saveTags(tags);
       renderAll();
     }
+
+    function deleteTag(id){
+      const tag=getTags().find(t=>t.id===id);
+      if(!tag) return;
+
+      const people=getPeople();
+      const person=people.find(p=>p.id===tag.personId);
+      const assignedText=person ? '\nAsignada a: '+fullName(person) : '\nSin persona asignada';
+
+      if(!confirm('¿Eliminar definitivamente la TAG '+id+'?'+assignedText+'\n\nLa persona y su ficha NO se eliminarán.')){
+        return;
+      }
+
+      saveTags(getTags().filter(t=>t.id!==id));
+      renderAll();
+    }
+
+    // Al seleccionar una persona, proponemos automáticamente su perfil.
+    $('tagPerson').addEventListener('change',()=>{
+      const personId=$('tagPerson').value;
+      if(!personId) return;
+
+      const person=getPeople().find(p=>p.id===personId);
+      if(person){
+        $('tagRole').value=person.role||'';
+      }
+    });
 
     function openPersonModal(){
       $('pName').value='';

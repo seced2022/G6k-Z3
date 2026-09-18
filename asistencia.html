@@ -6,215 +6,366 @@
   <meta name="theme-color" content="#050608" />
   <title>ASISTENCIA · G6k-Z3</title>
   <style>
-    :root {
-      --bg:#050608;
-      --panel:#0d1015;
-      --panel2:#151a22;
-      --text:#f5f7fb;
-      --muted:#a6adb7;
-      --accent:#ff7a00;
-      --line:rgba(255,122,0,.75);
-      --shadow:0 20px 55px rgba(0,0,0,.5);
+    :root{
+      --bg:#050608;--panel:#0d1117;--text:#f5f7fb;--muted:#9fa7b2;
+      --accent:#ff7a00;--green:#2bd27f;--red:#ff5a63;--blue:#5ca9ff;
+      --line:rgba(255,255,255,.09);--shadow:0 18px 55px rgba(0,0,0,.48);
     }
-
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body { margin:0; width:100%; min-height:100%; background:var(--bg); }
-    body {
-      min-height:100svh;
-      color:var(--text);
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      overflow-x:hidden;
-    }
-
-    button { font:inherit; }
-
-    .screen { display:none; min-height:100svh; }
-    .screen.active { display:block; }
-
-    /* PORTADA: no se cambia el diseño */
-    .home {
-      width:100vw;
-      height:100svh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      background:#050608;
-    }
-
-    .cover-wrap {
-      position:relative;
-      width:100%;
-      height:100%;
-      max-width:1024px;
-      margin:0 auto;
-    }
-
-    .cover {
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      object-position:center center;
-      display:block;
-      user-select:none;
-      -webkit-user-drag:none;
-    }
-
-    /* Zonas táctiles invisibles sobre los 6 bloques */
-    .hotspot {
-      position:absolute;
-      border:0;
-      background:transparent;
-      cursor:pointer;
-      z-index:5;
-      border-radius:18px;
-    }
-    .hotspot:focus-visible {
-      outline:2px solid var(--accent);
-      outline-offset:2px;
-    }
-
-    /* Coordenadas relativas sobre la portada aprobada */
-    .hs-oficial       { left:26.0%; top:45.8%; width:22.6%; height:12.8%; }
-    .hs-prensa        { left:51.0%; top:45.8%; width:22.6%; height:12.8%; }
-    .hs-participante  { left:76.0%; top:45.8%; width:22.0%; height:12.8%; }
-
-    .hs-asistencia    { left:26.0%; top:61.0%; width:22.6%; height:12.8%; }
-    .hs-organizacion  { left:51.0%; top:61.0%; width:22.6%; height:12.8%; }
-    .hs-vip           { left:76.0%; top:61.0%; width:22.0%; height:12.8%; }
-
-    /* Pantallas internas */
-    .module {
-      min-height:100svh;
-      padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);
       background:
-        radial-gradient(circle at 80% 0%, rgba(255,122,0,.10), transparent 24%),
-        linear-gradient(180deg,#07090c,#050608);
+        radial-gradient(circle at 85% 0%,rgba(255,122,0,.11),transparent 25%),
+        linear-gradient(180deg,#07090c,#050608 60%);
     }
-
-    .module-inner {
-      width:min(900px,100%);
-      margin:0 auto;
+    button,input{font:inherit}
+    input{
+      width:100%;background:#090c11;color:var(--text);border:1px solid rgba(255,255,255,.12);
+      border-radius:13px;padding:12px 13px;outline:none;
     }
-
-    .topbar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:22px;
+    input:focus{border-color:var(--accent)}
+    .hidden{display:none!important}
+    .app{
+      width:min(900px,100%);margin:0 auto;
+      padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);
     }
-
-    .back {
-      border:1px solid rgba(255,255,255,.12);
-      color:var(--text);
-      background:#0d1117;
-      padding:11px 14px;
-      border-radius:13px;
-      font-weight:800;
-      cursor:pointer;
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .btn{
+      border:1px solid rgba(255,255,255,.1);background:#0d1219;color:var(--text);
+      border-radius:12px;padding:11px 13px;font-weight:850;cursor:pointer;
     }
-
-    .brand {
-      font-weight:900;
-      letter-spacing:.08em;
-      color:var(--accent);
+    .btn.primary{background:var(--accent);color:#111;border-color:transparent}
+    .brand{font-weight:950;color:var(--accent);letter-spacing:.08em}
+    .hero{padding:20px 0 18px;border-bottom:1px solid var(--line);margin-bottom:16px}
+    .eyebrow{color:var(--accent);font-size:.75rem;font-weight:900;letter-spacing:.18em}
+    h1{margin:6px 0 6px;font-size:clamp(2.2rem,7vw,4rem);letter-spacing:-.04em}
+    .hero p{margin:0;color:var(--muted)}
+    .card{
+      background:linear-gradient(180deg,rgba(18,24,33,.97),rgba(10,14,19,.97));
+      border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;
     }
-
-    .hero {
-      padding:24px 0 16px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      margin-bottom:18px;
+    .lookup-row{display:flex;gap:10px}
+    .lookup-row input{flex:1}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+    .mini{
+      padding:15px;border-radius:16px;border:1px solid var(--line);background:#0a0e14;
     }
-
-    .eyebrow {
-      color:var(--accent);
-      font-size:.78rem;
-      font-weight:900;
-      letter-spacing:.17em;
+    .mini .label{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em}
+    .mini strong{display:block;margin-top:6px;font-size:1.05rem}
+    .identity{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .identity h2{margin:0 0 4px;font-size:1.5rem}
+    .identity p{margin:0;color:var(--muted)}
+    .number{
+      min-width:80px;height:80px;border-radius:18px;display:grid;place-items:center;
+      font-size:2rem;font-weight:1000;background:var(--accent);color:#111;
+      box-shadow:0 10px 30px rgba(255,122,0,.18);
     }
-
-    h1 {
-      margin:7px 0 6px;
-      font-size:clamp(2rem,6vw,3.6rem);
-      letter-spacing:-.04em;
+    .pill{
+      display:inline-block;padding:6px 9px;border-radius:999px;font-size:.72rem;font-weight:900;
+      background:rgba(43,210,127,.12);color:#85efb4;
     }
-
-    .hero p {
-      margin:0;
-      color:var(--muted);
-      font-size:1rem;
+    .notice{
+      padding:13px 14px;border-radius:15px;background:rgba(255,122,0,.08);
+      border:1px solid rgba(255,122,0,.22);color:#ffc188;line-height:1.45;
     }
-
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-      margin-top:20px;
+    .shared{
+      padding:13px 14px;border-radius:15px;background:rgba(92,169,255,.08);
+      border:1px solid rgba(92,169,255,.22);color:#a8d3ff;line-height:1.45;
     }
-
-    .card {
-      min-height:150px;
-      padding:18px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        linear-gradient(180deg,rgba(20,26,34,.95),rgba(10,14,19,.96));
-      box-shadow:var(--shadow);
+    .error{color:#ff9da2;margin-top:10px}
+    .muted{color:var(--muted)}
+    .stage{
+      display:flex;align-items:center;gap:10px;margin-bottom:14px;
+      color:var(--muted);font-size:.82rem;
     }
-
-    .card h3 {
-      margin:0 0 8px;
-      font-size:1.08rem;
+    .stage span{
+      padding:6px 9px;border-radius:999px;border:1px solid var(--line);background:#0a0e14;
     }
-
-    .card p {
-      margin:0;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .status {
-      display:inline-block;
-      margin-top:14px;
-      padding:6px 9px;
-      border-radius:999px;
-      background:rgba(255,122,0,.12);
-      color:#ffb36b;
-      font-size:.75rem;
-      font-weight:900;
-    }
-
-    .footer {
-      margin-top:26px;
-      text-align:center;
-      color:#77808b;
-      font-size:.8rem;
-      letter-spacing:.08em;
-    }
-
-    @media (max-width:700px) {
-      .grid { grid-template-columns:1fr; }
+    .stage span.active{border-color:rgba(255,122,0,.5);color:#ffbb7c}
+    .section-title{margin:0 0 12px;font-size:1.05rem}
+    .footer{margin-top:24px;text-align:center;color:#78818c;font-size:.78rem;letter-spacing:.08em}
+    @media(max-width:650px){
+      .grid{grid-template-columns:1fr}
+      .lookup-row{flex-direction:column}
+      .identity{flex-direction:column}
     }
   </style>
 </head>
 <body>
-  <section id="asistencia" class="screen active module">
-    <div class="module-inner">
-      <div class="topbar"><button class="back" onclick="location.href='index.html'">← Inicio</button><div class="brand">G6K® · Z3</div></div>
-      <div class="hero">
-        <div class="eyebrow">MÓDULO</div>
-        <h1>ASISTENCIA</h1>
-        <p>Gestión de parque, parcelas y equipos de asistencia.</p>
-      </div>
-      <div class="grid">
-        <div class="card"><h3>Participantes</h3><p>Altas de pilotos y datos de asistencia.</p><span class="status">CONECTAR APP EXISTENTE</span></div>
-        <div class="card"><h3>Parcelas</h3><p>Asignación y control del parque de asistencia.</p><span class="status">CONECTAR APP EXISTENTE</span></div>
-        <div class="card"><h3>Asistencias compartidas</h3><p>Vinculación de varios participantes a una misma asistencia.</p><span class="status">SIGUIENTE PASO</span></div>
-        <div class="card"><h3>Control de acceso</h3><p>Entrada y salida mediante TAG y permisos.</p><span class="status">SIGUIENTE PASO</span></div>
-      </div>
-      <div class="footer">G6K® 2026</div>
+  <main class="app">
+    <div class="topbar">
+      <button class="btn" onclick="location.href='index.html'">← Inicio</button>
+      <div class="brand">G6K® · Z3</div>
     </div>
-  </section>
+
+    <section class="hero">
+      <div class="eyebrow">MÓDULO</div>
+      <h1>ASISTENCIA</h1>
+      <p>Consulta la información de asistencia de un participante por dorsal.</p>
+    </section>
+
+    <div class="stage">
+      <span id="stageTag" class="active">1 · Validar TAG</span>
+      <span id="stageDorsal">2 · Dorsal</span>
+      <span id="stageInfo">3 · Información</span>
+    </div>
+
+    <!-- PASO 1: TAG -->
+    <section id="tagStep" class="card">
+      <div style="font-weight:900;margin-bottom:8px">Acceso de asistencia</div>
+      <div class="muted" style="font-size:.86rem;margin-bottom:12px">
+        Introduce una TAG con perfil ASISTENCIA. Más adelante este paso se hará automáticamente al leer la TAG NFC.
+      </div>
+
+      <div class="lookup-row">
+        <input id="tagLookup" placeholder="Ej. Z3-000010">
+        <button class="btn primary" onclick="validateTag()">Validar TAG</button>
+      </div>
+
+      <div id="tagError" class="error"></div>
+    </section>
+
+    <!-- PASO 2: DORSAL -->
+    <section id="dorsalStep" class="card hidden">
+      <div class="identity" style="margin-bottom:14px">
+        <div>
+          <h2>TAG autorizada</h2>
+          <p id="assistanceUser">Perfil ASISTENCIA</p>
+        </div>
+        <span class="pill">ACCESO ACTIVO</span>
+      </div>
+
+      <div style="font-weight:900;margin-bottom:8px">¿Qué dorsal necesitas consultar?</div>
+      <div class="muted" style="font-size:.86rem;margin-bottom:12px">
+        Introduce el dorsal del participante al que pertenece esta asistencia.
+      </div>
+
+      <div class="lookup-row">
+        <input id="dorsalLookup" inputmode="numeric" placeholder="Ej. 24">
+        <button class="btn primary" onclick="loadDorsal()">Buscar dorsal</button>
+      </div>
+
+      <div id="dorsalError" class="error"></div>
+    </section>
+
+    <!-- PASO 3: INFO ASISTENCIA -->
+    <section id="assistanceContent" class="hidden">
+      <div class="card">
+        <div class="identity">
+          <div>
+            <h2 id="aDriver">—</h2>
+            <p id="aCar">—</p>
+          </div>
+          <div id="aNumber" class="number">—</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="mini">
+          <div class="label">Parcela de asistencia</div>
+          <strong id="aPlot">No asignada</strong>
+        </div>
+
+        <div class="mini">
+          <div class="label">Tipo de asistencia</div>
+          <strong id="aType">—</strong>
+        </div>
+
+        <div class="mini">
+          <div class="label">Responsable</div>
+          <strong id="aManager">—</strong>
+        </div>
+
+        <div class="mini">
+          <div class="label">Teléfono</div>
+          <strong id="aPhone">—</strong>
+        </div>
+      </div>
+
+      <div style="height:14px"></div>
+
+      <div class="card">
+        <h3 class="section-title">Asistencia compartida</h3>
+        <div id="sharedBox" class="shared">No comparte asistencia.</div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Información del participante</h3>
+        <div class="grid">
+          <div class="mini">
+            <div class="label">Escudería / equipo</div>
+            <strong id="aTeam">—</strong>
+          </div>
+          <div class="mini">
+            <div class="label">Matrícula competición</div>
+            <strong id="aPlate">—</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Avisos para asistencia</h3>
+        <div id="aNotes" class="notice">Sin instrucciones adicionales.</div>
+      </div>
+
+      <button class="btn" style="width:100%" onclick="newDorsal()">Consultar otro dorsal</button>
+    </section>
+
+    <div class="footer">G6K® 2026 · G6k-Z3</div>
+  </main>
+
+  <script>
+    const STORAGE={
+      tags:'g6k_z3_admin_tags',
+      people:'g6k_z3_admin_people',
+      profiles:'g6k_z3_admin_profiles'
+    };
+
+    const $=id=>document.getElementById(id);
+    const read=key=>JSON.parse(localStorage.getItem(key)||(key===STORAGE.profiles?'{}':'[]'));
+
+    let currentAssistanceTag=null;
+
+    function text(id,value,fallback='—'){
+      $(id).textContent=value||fallback;
+    }
+
+    function setStage(step){
+      ['stageTag','stageDorsal','stageInfo'].forEach(id=>$(id).classList.remove('active'));
+      if(step===1) $('stageTag').classList.add('active');
+      if(step===2) $('stageDorsal').classList.add('active');
+      if(step===3) $('stageInfo').classList.add('active');
+    }
+
+    function validateTag(){
+      const id=$('tagLookup').value.trim().toUpperCase();
+      const tags=read(STORAGE.tags);
+      const people=read(STORAGE.people);
+
+      const tag=tags.find(t=>t.id===id);
+
+      if(!tag){
+        $('tagError').textContent='TAG no encontrada.';
+        return;
+      }
+
+      if(tag.status==='blocked'){
+        $('tagError').textContent='Esta TAG está bloqueada.';
+        return;
+      }
+
+      const person=people.find(p=>p.id===tag.personId);
+
+      const role=(tag.role || person?.role || '').toUpperCase();
+
+      if(role!=='ASISTENCIA'){
+        $('tagError').textContent='Esta TAG no corresponde al perfil ASISTENCIA.';
+        return;
+      }
+
+      currentAssistanceTag=tag;
+      $('tagError').textContent='';
+
+      if(person){
+        $('assistanceUser').textContent=(person.name+' '+person.surname).trim()+' · ASISTENCIA';
+      }else{
+        $('assistanceUser').textContent='TAG '+tag.id+' · ASISTENCIA';
+      }
+
+      $('tagStep').classList.add('hidden');
+      $('dorsalStep').classList.remove('hidden');
+      $('assistanceContent').classList.add('hidden');
+      setStage(2);
+
+      const url=new URL(window.location.href);
+      url.searchParams.set('tag',id);
+      history.replaceState({},'',url);
+    }
+
+    function loadDorsal(){
+      const dorsal=$('dorsalLookup').value.trim();
+      if(!dorsal){
+        $('dorsalError').textContent='Introduce un dorsal.';
+        return;
+      }
+
+      const people=read(STORAGE.people);
+      const profiles=read(STORAGE.profiles);
+
+      let match=null;
+
+      for(const person of people){
+        const profile=profiles[person.id] || {};
+        const p=profile.participant || {};
+        if(String(p.number||'').trim()===dorsal){
+          match={person,p};
+          break;
+        }
+      }
+
+      if(!match){
+        $('dorsalError').textContent='No se ha encontrado ningún participante con ese dorsal.';
+        $('assistanceContent').classList.add('hidden');
+        return;
+      }
+
+      $('dorsalError').textContent='';
+
+      const {person,p}=match;
+
+      text('aDriver',p.driver,(person.name+' '+person.surname).trim());
+      text('aCar',p.car);
+      text('aNumber',p.number,dorsal);
+
+      text('aPlot',p.servicePlot,'No asignada');
+      text('aType',p.serviceType);
+      text('aManager',p.serviceManager);
+      text('aPhone',p.servicePhone);
+
+      text('aTeam',p.team);
+      text('aPlate',p.plate);
+
+      if(p.sharedService){
+        $('sharedBox').textContent='Sí'+(p.sharedWith?' · Comparte con '+p.sharedWith:'');
+      }else{
+        $('sharedBox').textContent='No comparte asistencia.';
+      }
+
+      $('aNotes').textContent=p.notes||'Sin instrucciones adicionales.';
+
+      $('assistanceContent').classList.remove('hidden');
+      setStage(3);
+
+      const url=new URL(window.location.href);
+      url.searchParams.set('dorsal',dorsal);
+      history.replaceState({},'',url);
+    }
+
+    function newDorsal(){
+      $('dorsalLookup').value='';
+      $('dorsalError').textContent='';
+      $('assistanceContent').classList.add('hidden');
+      setStage(2);
+      $('dorsalLookup').focus();
+
+      const url=new URL(window.location.href);
+      url.searchParams.delete('dorsal');
+      history.replaceState({},'',url);
+    }
+
+    const params=new URLSearchParams(location.search);
+    const initialTag=params.get('tag');
+    const initialDorsal=params.get('dorsal');
+
+    if(initialTag){
+      $('tagLookup').value=initialTag;
+      validateTag();
+      if(initialDorsal && !$('dorsalStep').classList.contains('hidden')){
+        $('dorsalLookup').value=initialDorsal;
+        loadDorsal();
+      }
+    }
+  </script>
 </body>
 </html>

@@ -657,6 +657,25 @@
           </label>
         </div>
       </div>
+
+      <div class="card" style="border-color:rgba(255,90,99,.28)">
+        <div class="panel-head" style="margin-bottom:12px">
+          <div>
+            <h2 style="font-size:1.05rem;color:#ff9298">Zona de mantenimiento</h2>
+            <p>Borra todos los datos del evento para empezar desde cero.</p>
+          </div>
+        </div>
+
+        <div class="notice" style="background:rgba(255,90,99,.07);border-color:rgba(255,90,99,.22);color:#ffb0b5">
+          Esta acción elimina Personas, TAGS, perfiles, documentos y datos públicos de Firebase.
+          <strong>No elimina tu usuario administrador de Firebase Authentication.</strong>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn danger" onclick="resetEventData()">BORRAR DATOS DEL EVENTO</button>
+        </div>
+      </div>
+
     </section>
 
     <div class="footer">G6K® 2026 · G6k-Z3</div>
@@ -1446,17 +1465,16 @@
 
     function seed(){
       if(!localStorage.getItem(STORAGE.people)){
-        savePeople([
-          {id:'P-001',name:'Juan',surname:'García López',role:'OFICIAL',phone:'600 000 001',email:'juan@ejemplo.es'},
-          {id:'P-002',name:'Laura',surname:'Ruiz Martín',role:'PRENSA',phone:'600 000 002',email:'laura@ejemplo.es'}
-        ]);
+        localStorage.setItem(STORAGE.people,'[]');
       }
       if(!localStorage.getItem(STORAGE.tags)){
-        saveTags([
-          {id:'Z3-000001',personId:'P-001',role:'OFICIAL',status:'active'},
-          {id:'Z3-000002',personId:'P-002',role:'PRENSA',status:'active'},
-          {id:'Z3-000003',personId:'',role:'',status:'unassigned'}
-        ]);
+        localStorage.setItem(STORAGE.tags,'[]');
+      }
+      if(!localStorage.getItem(STORAGE.profiles)){
+        localStorage.setItem(STORAGE.profiles,'{}');
+      }
+      if(!localStorage.getItem(STORAGE.documents)){
+        localStorage.setItem(STORAGE.documents,'[]');
       }
     }
 
@@ -2290,6 +2308,60 @@
       if(!confirm('¿Eliminar este documento?')) return;
       saveDocuments(getDocuments().filter(d=>d.id!==id));
       renderDocuments();
+    }
+
+
+    async function resetEventData(){
+      if(!firebaseUser || firebaseUser.uid!==ALLOWED_ADMIN_UID){
+        alert('No hay una sesión ADMIN autorizada.');
+        return;
+      }
+
+      const confirm1=confirm(
+        'Vas a borrar TODOS los datos del evento:\\n\\n'+
+        '• Personas\\n• TAGS\\n• Perfiles\\n• Documentos\\n• Datos públicos de TAG\\n\\n'+
+        'Tu usuario ADMIN NO se borrará.\\n\\n¿Quieres continuar?'
+      );
+      if(!confirm1) return;
+
+      const word=prompt('Para confirmar escribe exactamente: BORRAR');
+      if(word!=='BORRAR'){
+        alert('Operación cancelada.');
+        return;
+      }
+
+      try{
+        firebaseHydrating=true;
+
+        await Promise.all([
+          fbDb.ref(FIREBASE_EVENT_PATH).remove(),
+          fbDb.ref('publicTags').remove(),
+          fbDb.ref('publicDocuments').remove(),
+          fbDb.ref('publicAssistance').remove()
+        ]);
+
+        localStorage.removeItem(STORAGE.people);
+        localStorage.removeItem(STORAGE.tags);
+        localStorage.removeItem(STORAGE.profiles);
+        localStorage.removeItem(STORAGE.documents);
+
+        seed();
+        renderAll();
+
+        if($('publicSyncInfo')){
+          $('publicSyncInfo').textContent='Sin datos públicos · evento limpio';
+        }
+        if($('firebaseInfo')){
+          $('firebaseInfo').textContent='Evento vacío. Ya puedes crear los nuevos datos.';
+        }
+
+        alert('Datos del evento eliminados. ADMIN sigue activo y ya puedes crear las nuevas personas y TAGS.');
+      }catch(err){
+        console.error(err);
+        alert('No se pudieron borrar los datos. Revisa la conexión o las reglas de Firebase.');
+      }finally{
+        firebaseHydrating=false;
+      }
     }
 
     function renderAll(){

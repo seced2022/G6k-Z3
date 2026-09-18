@@ -1,0 +1,46 @@
+G6k-Z3 · v16 · TAG + FIREBASE
+================================
+
+NOVEDADES
+---------
+- Cada TAG tiene un ID visible (ej. Z3-000001) y un token NFC secreto aleatorio.
+- ADMIN > TAGS permite copiar directamente la URL que se grabará en la NFC.
+- La URL abre tag.html?token=TOKEN_SECRETO.
+- tag.html consulta Firebase y abre automáticamente el módulo correcto.
+- OFICIAL, PRENSA, PARTICIPANTE, ASISTENCIA, ORGANIZACIÓN y VIP ya leen sus datos públicos desde Firebase.
+- ASISTENCIA valida la TAG y después pregunta el dorsal.
+- Los permisos internos VIP de comidas y zonas especiales NO se publican en la parte visible.
+
+PASOS IMPRESCINDIBLES
+---------------------
+1. Firebase Console > Realtime Database > Rules.
+   Sustituye las reglas actuales por el contenido de database.rules.json y pulsa Publish.
+
+2. Sube TODOS los archivos de esta v16 al repositorio / GitHub Pages.
+   Incluye tag.html, admin-tag.js y firebase-public.js.
+
+3. Entra en admin.html con tu usuario ADMIN.
+   Las TAG antiguas recibirán automáticamente un token seguro y ADMIN sincronizará:
+   /publicTags
+   /publicDocuments
+   /publicAssistance
+
+4. Ve a ADMIN > TAGS y pulsa "Copiar URL" en una TAG activa y asignada.
+
+5. Abre esa URL desde OTRO móvil.
+   Debe detectar el perfil y abrir su módulo con la información guardada en Firebase.
+
+6. Esa URL es la que grabaremos físicamente en la TAG NFC.
+
+SEGURIDAD
+---------
+- /events sigue protegido por Authentication + UID ADMIN.
+- Los móviles con TAG no pueden leer /events.
+- El acceso se hace mediante un token aleatorio de 48 caracteres hexadecimales.
+- Regenerar el token invalida la URL anterior después de guardar y sincronizar.
+- VIP no recibe en /publicTags sus permisos internos de comidas, zonas especiales ni notas ADMIN.
+
+DOCUMENTOS
+----------
+Por ahora los documentos siguen almacenados como base64 en Realtime Database.
+Cuando validemos el funcionamiento de las TAG, conviene migrarlos a Firebase Storage para PDF/roadbook grandes.

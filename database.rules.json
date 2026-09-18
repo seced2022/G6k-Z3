@@ -1,0 +1,32 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "events": {
+      "$eventId": {
+        ".read": "auth != null && auth.uid === 'vAU0N9YTYiR4c8rIY95kIpPFPmY2'",
+        ".write": "auth != null && auth.uid === 'vAU0N9YTYiR4c8rIY95kIpPFPmY2'"
+      }
+    },
+    "publicTags": {
+      ".write": "auth != null && auth.uid === 'vAU0N9YTYiR4c8rIY95kIpPFPmY2'",
+      "$token": {
+        ".read": true
+      }
+    },
+    "publicDocuments": {
+      ".write": "auth != null && auth.uid === 'vAU0N9YTYiR4c8rIY95kIpPFPmY2'",
+      "$docId": {
+        ".read": true
+      }
+    },
+    "publicAssistance": {
+      ".write": "auth != null && auth.uid === 'vAU0N9YTYiR4c8rIY95kIpPFPmY2'",
+      "$token": {
+        "$dorsal": {
+          ".read": true
+        }
+      }
+    }
+  }
+}

@@ -91,6 +91,10 @@
       .identity{flex-direction:column}
     }
   </style>
+
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
 </head>
 <body>
   <main class="app">
@@ -215,7 +219,7 @@
     <div class="footer">G6K® 2026 · G6k-Z3</div>
   </main>
 
-  <script>
+  <script type="text/plain" id="legacy-local-script">
     const STORAGE={
       tags:'g6k_z3_admin_tags',
       people:'g6k_z3_admin_people',
@@ -367,5 +371,6 @@
       }
     }
   </script>
+  <script src="firebase-public.js"></script>
 </body>
 </html>

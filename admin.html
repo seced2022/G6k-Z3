@@ -628,6 +628,10 @@
             <h3>Sesión</h3>
             <p id="firebaseUserInfo">Sin sesión.</p>
           </div>
+          <div class="mini-card">
+            <h3>Acceso por TAG</h3>
+            <p id="publicSyncInfo">Pendiente de sincronización pública.</p>
+          </div>
         </div>
 
         <div class="actions-row" style="flex-wrap:wrap">
@@ -684,6 +688,21 @@
         <label class="full">Asignar a
           <select id="tagPerson"></select>
         </label>
+        <label class="full">Token NFC seguro
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="tagToken" readonly placeholder="Se generará automáticamente">
+            <button type="button" class="btn small" onclick="regenerateTagToken()">Regenerar</button>
+          </div>
+          <span class="muted" style="font-size:.75rem;margin-top:5px">Este token se usa en la URL grabada en la TAG.</span>
+        </label>
+
+        <label class="full">URL para grabar en la TAG
+          <div style="display:flex;gap:8px;align-items:center">
+            <input id="tagUrl" readonly placeholder="Se generará con el token">
+            <button type="button" class="btn small" onclick="copyTagUrlFromModal()">Copiar</button>
+          </div>
+        </label>
+
         <label>Estado
           <select id="tagStatus">
             <option value="active">Activa</option>
@@ -2282,5 +2301,6 @@
 
     // El render inicial se realiza después de autenticar y sincronizar Firebase.
   </script>
+  <script src="admin-tag.js"></script>
 </body>
 </html>

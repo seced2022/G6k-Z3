@@ -1034,6 +1034,76 @@
     </div>
   </div>
 
+
+  <!-- MODAL FICHA VIP -->
+  <div id="vipProfileModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Ficha VIP</h3>
+          <div id="vipPersonName" class="muted" style="margin-top:4px"></div>
+        </div>
+        <button class="btn small" onclick="closeVipProfileModal()">Cerrar</button>
+      </div>
+
+      <input id="vipPersonId" type="hidden">
+
+      <div class="form-grid">
+        <label>Nº acreditación VIP
+          <input id="vipAccreditation" placeholder="Ej. VIP-014">
+        </label>
+
+        <label>Tipo / grupo
+          <input id="vipGroup" placeholder="Ej. Invitado organización">
+        </label>
+
+        <label class="full">Información visible para el VIP
+          <textarea id="vipInfo" rows="4" placeholder="Punto de encuentro, recomendaciones, teléfono de contacto, etc."></textarea>
+        </label>
+
+        <label class="full">Horarios / programa
+          <textarea id="vipSchedule" rows="5" placeholder="Ej. 09:00 Recepción VIP&#10;10:30 Salida TC1&#10;14:00 Comida..."></textarea>
+        </label>
+
+        <label class="full">Acceso a comidas
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="vipMealFriDinner" type="checkbox"> Cena viernes</label>
+            <label class="checkbox-line"><input id="vipMealSatBreakfast" type="checkbox"> Desayuno sábado</label>
+            <label class="checkbox-line"><input id="vipMealSatLunch" type="checkbox"> Comida sábado</label>
+            <label class="checkbox-line"><input id="vipMealSatDinner" type="checkbox"> Cena sábado</label>
+            <label class="checkbox-line"><input id="vipMealSunBreakfast" type="checkbox"> Desayuno domingo</label>
+            <label class="checkbox-line"><input id="vipMealSunLunch" type="checkbox"> Comida domingo</label>
+          </div>
+          <span class="muted" style="font-size:.76rem;margin-top:6px">
+            Estos permisos NO se mostrarán en la pantalla VIP; servirán para validación mediante TAG.
+          </span>
+        </label>
+
+        <label class="full">Accesos especiales
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="vipZoneHospitality" type="checkbox"> Hospitality / zona VIP</label>
+            <label class="checkbox-line"><input id="vipZonePodium" type="checkbox"> Podium</label>
+            <label class="checkbox-line"><input id="vipZoneService" type="checkbox"> Parque de asistencia</label>
+            <label class="checkbox-line"><input id="vipZoneStartFinish" type="checkbox"> Salida / llegada</label>
+            <label class="checkbox-line"><input id="vipZoneParcFerme" type="checkbox"> Parque cerrado</label>
+            <label class="checkbox-line"><input id="vipZoneSpecial" type="checkbox"> Zona especial organización</label>
+          </div>
+          <span class="muted" style="font-size:.76rem;margin-top:6px">
+            Estos accesos quedan ocultos al usuario y se comprobarán internamente al pasar la TAG.
+          </span>
+        </label>
+
+        <label class="full">Notas internas ADMIN
+          <textarea id="vipAdminNotes" rows="3" placeholder="Solo para administración. No se mostrará al VIP."></textarea>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" onclick="saveVipProfile()">Guardar ficha VIP</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE = {
       tags: 'g6k_z3_admin_tags',
@@ -1370,6 +1440,8 @@
         openParticipantProfileModal(personId);
       }else if(person.role==='ORGANIZACIÓN'){
         openOrganizationProfileModal(personId);
+      }else if(person.role==='VIP'){
+        openVipProfileModal(personId);
       }else{
         openProfileModal(personId);
       }
@@ -1658,6 +1730,86 @@
       saveProfiles(profiles);
       closeOrganizationProfileModal();
       alert('Ficha de organización guardada.');
+    }
+
+
+    function openVipProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+
+      const profiles=getProfiles();
+      const existing=profiles[personId] || {};
+      const p=existing.vip || {};
+
+      $('vipPersonId').value=personId;
+      $('vipPersonName').textContent=fullName(person)+' · VIP';
+
+      $('vipAccreditation').value=p.accreditation||'';
+      $('vipGroup').value=p.group||'';
+      $('vipInfo').value=p.info||'';
+      $('vipSchedule').value=p.schedule||'';
+
+      $('vipMealFriDinner').checked=!!p.meals?.friDinner;
+      $('vipMealSatBreakfast').checked=!!p.meals?.satBreakfast;
+      $('vipMealSatLunch').checked=!!p.meals?.satLunch;
+      $('vipMealSatDinner').checked=!!p.meals?.satDinner;
+      $('vipMealSunBreakfast').checked=!!p.meals?.sunBreakfast;
+      $('vipMealSunLunch').checked=!!p.meals?.sunLunch;
+
+      $('vipZoneHospitality').checked=!!p.zones?.hospitality;
+      $('vipZonePodium').checked=!!p.zones?.podium;
+      $('vipZoneService').checked=!!p.zones?.service;
+      $('vipZoneStartFinish').checked=!!p.zones?.startFinish;
+      $('vipZoneParcFerme').checked=!!p.zones?.parcFerme;
+      $('vipZoneSpecial').checked=!!p.zones?.special;
+
+      $('vipAdminNotes').value=p.adminNotes||'';
+
+      $('vipProfileModal').classList.add('show');
+    }
+
+    function closeVipProfileModal(){
+      $('vipProfileModal').classList.remove('show');
+    }
+
+    function saveVipProfile(){
+      const personId=$('vipPersonId').value;
+      if(!personId) return;
+
+      const profiles=getProfiles();
+      const existing=profiles[personId] || {};
+
+      existing.vip={
+        accreditation:$('vipAccreditation').value.trim(),
+        group:$('vipGroup').value.trim(),
+        info:$('vipInfo').value.trim(),
+        schedule:$('vipSchedule').value.trim(),
+
+        meals:{
+          friDinner:$('vipMealFriDinner').checked,
+          satBreakfast:$('vipMealSatBreakfast').checked,
+          satLunch:$('vipMealSatLunch').checked,
+          satDinner:$('vipMealSatDinner').checked,
+          sunBreakfast:$('vipMealSunBreakfast').checked,
+          sunLunch:$('vipMealSunLunch').checked
+        },
+
+        zones:{
+          hospitality:$('vipZoneHospitality').checked,
+          podium:$('vipZonePodium').checked,
+          service:$('vipZoneService').checked,
+          startFinish:$('vipZoneStartFinish').checked,
+          parcFerme:$('vipZoneParcFerme').checked,
+          special:$('vipZoneSpecial').checked
+        },
+
+        adminNotes:$('vipAdminNotes').value.trim()
+      };
+
+      profiles[personId]=existing;
+      saveProfiles(profiles);
+      closeVipProfileModal();
+      alert('Ficha VIP guardada.');
     }
 
     function openProfileModal(personId){

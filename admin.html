@@ -259,6 +259,12 @@
         <span class="nav-title">ACCESOS</span>
         <span class="nav-sub">Lecturas TAG e historial</span>
       </button>
+
+      <button class="nav-card" data-panel="documentos">
+        <span class="nav-icon">📚</span>
+        <span class="nav-title">DOCUMENTOS</span>
+        <span class="nav-sub">Roadbook, TC y tablón</span>
+      </button>
       <button class="nav-card" data-panel="avisos">
         <span class="nav-icon">📢</span>
         <span class="nav-title">AVISOS</span>
@@ -413,6 +419,62 @@
             <tbody>
               <tr><td colspan="5" class="muted">Todavía no hay lecturas registradas.</td></tr>
             </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- DOCUMENTOS -->
+    <section id="panel-documentos" class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>Documentos para participantes</h2>
+          <p>Sube Roadbook, información de TC y documentos del tablón de anuncios.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="form-grid">
+          <label>Título
+            <input id="docTitle" placeholder="Ej. Roadbook oficial">
+          </label>
+
+          <label>Categoría
+            <select id="docCategory">
+              <option value="ROADBOOK">Roadbook</option>
+              <option value="TC">TC / Tramos</option>
+              <option value="TABLON">Tablón de anuncios</option>
+            </select>
+          </label>
+
+          <label class="full">Archivo
+            <input id="docFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx,.xls,.xlsx">
+          </label>
+
+          <label class="full">Descripción
+            <textarea id="docDescription" rows="3" placeholder="Descripción breve u observaciones..."></textarea>
+          </label>
+        </div>
+
+        <div class="actions-row">
+          <button class="btn primary" onclick="saveDocument()">Subir documento</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>CATEGORÍA</th>
+                <th>TÍTULO</th>
+                <th>ARCHIVO</th>
+                <th>FECHA</th>
+                <th>ACCIONES</th>
+              </tr>
+            </thead>
+            <tbody id="documentsBody"></tbody>
           </table>
         </div>
       </div>
@@ -744,11 +806,145 @@
     </div>
   </div>
 
+
+  <!-- MODAL FICHA PARTICIPANTE -->
+  <div id="participantProfileModal" class="modal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div>
+          <h3>Ficha de participante</h3>
+          <div id="participantPersonName" class="muted" style="margin-top:4px"></div>
+        </div>
+        <button class="btn small" onclick="closeParticipantProfileModal()">Cerrar</button>
+      </div>
+
+      <input id="participantPersonId" type="hidden">
+
+      <div class="form-grid">
+        <label>Dorsal
+          <input id="partNumber" placeholder="Ej. 24">
+        </label>
+
+        <label>Escudería / equipo
+          <input id="partTeam" placeholder="Ej. Linares Racing Club">
+        </label>
+
+        <label>Piloto
+          <input id="partDriver" placeholder="Nombre y apellidos">
+        </label>
+
+        <label>Copiloto
+          <input id="partCodriver" placeholder="Nombre y apellidos">
+        </label>
+
+        <label>Vehículo
+          <input id="partCar" placeholder="Ej. Peugeot 208 Rally4">
+        </label>
+
+        <label>Matrícula
+          <input id="partPlate" placeholder="Ej. 1234 ABC">
+        </label>
+
+        <label>Categoría
+          <input id="partCategory" placeholder="Ej. Rally4">
+        </label>
+
+        <label>Clase / grupo
+          <input id="partClass" placeholder="Ej. Clase 2">
+        </label>
+
+        <label class="full">Parcela de asistencia
+          <input id="partServicePlot" placeholder="Ej. B07">
+        </label>
+
+        <label>Tipo de asistencia
+          <select id="partServiceType">
+            <option value="">Seleccionar</option>
+            <option>Furgoneta</option>
+            <option>Camión</option>
+            <option>Turismo</option>
+            <option>Furgoneta + remolque</option>
+            <option>Camión + vehículo auxiliar</option>
+            <option>Otro</option>
+          </select>
+        </label>
+
+        <label>Responsable asistencia
+          <input id="partServiceManager" placeholder="Nombre">
+        </label>
+
+        <label>Teléfono asistencia
+          <input id="partServicePhone" placeholder="Teléfono">
+        </label>
+
+        <label>Comparte asistencia
+          <select id="partSharedService">
+            <option value="no">No</option>
+            <option value="si">Sí</option>
+          </select>
+        </label>
+
+        <label class="full">Comparte con
+          <input id="partSharedWith" placeholder="Dorsal / piloto">
+        </label>
+
+        <label class="full">Estado de documentación
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="docLicence" type="checkbox"> Licencias verificadas</label>
+            <label class="checkbox-line"><input id="docVehicle" type="checkbox"> Documentación vehículo</label>
+            <label class="checkbox-line"><input id="docInsurance" type="checkbox"> Seguro / documentación requerida</label>
+            <label class="checkbox-line"><input id="docScrutineering" type="checkbox"> Verificaciones técnicas</label>
+          </div>
+        </label>
+
+        <label class="full">Alojamiento
+          <input id="partHotel" placeholder="Nombre del hotel / alojamiento">
+        </label>
+
+        <label>Habitación
+          <input id="partRoom" placeholder="Ej. 112">
+        </label>
+
+        <label>Entrada alojamiento
+          <input id="partCheckin" type="date">
+        </label>
+
+        <label>Salida alojamiento
+          <input id="partCheckout" type="date">
+        </label>
+
+        <label class="full">Dirección del alojamiento
+          <input id="partHotelAddress" placeholder="Dirección">
+        </label>
+
+        <label class="full">Comidas autorizadas
+          <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px">
+            <label class="checkbox-line"><input id="partMealFriDinner" type="checkbox"> Cena viernes</label>
+            <label class="checkbox-line"><input id="partMealSatBreakfast" type="checkbox"> Desayuno sábado</label>
+            <label class="checkbox-line"><input id="partMealSatLunch" type="checkbox"> Comida sábado</label>
+            <label class="checkbox-line"><input id="partMealSatDinner" type="checkbox"> Cena sábado</label>
+            <label class="checkbox-line"><input id="partMealSunBreakfast" type="checkbox"> Desayuno domingo</label>
+            <label class="checkbox-line"><input id="partMealSunLunch" type="checkbox"> Comida domingo</label>
+          </div>
+        </label>
+
+        <label class="full">Notas / avisos
+          <textarea id="partNotes" rows="4" placeholder="Indicaciones específicas para este participante..."></textarea>
+        </label>
+      </div>
+
+      <div class="actions-row">
+        <button class="btn primary" onclick="saveParticipantProfile()">Guardar ficha de participante</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const STORAGE = {
       tags: 'g6k_z3_admin_tags',
       people: 'g6k_z3_admin_people',
-      profiles: 'g6k_z3_admin_profiles'
+      profiles: 'g6k_z3_admin_profiles',
+      documents: 'g6k_z3_event_documents'
     };
 
     const $ = id => document.getElementById(id);
@@ -961,6 +1157,8 @@
       if(!person) return;
       if(person.role==='PRENSA'){
         openPressProfileModal(personId);
+      }else if(person.role==='PARTICIPANTE'){
+        openParticipantProfileModal(personId);
       }else{
         openProfileModal(personId);
       }
@@ -1057,6 +1255,110 @@
       alert('Ficha de prensa guardada.');
     }
 
+
+    function openParticipantProfileModal(personId){
+      const person=getPeople().find(p=>p.id===personId);
+      if(!person) return;
+
+      const profiles=getProfiles();
+      const x=profiles[personId] || {};
+      const p=x.participant || {};
+
+      $('participantPersonId').value=personId;
+      $('participantPersonName').textContent=fullName(person)+' · PARTICIPANTE';
+
+      $('partNumber').value=p.number||'';
+      $('partTeam').value=p.team||'';
+      $('partDriver').value=p.driver||fullName(person);
+      $('partCodriver').value=p.codriver||'';
+      $('partCar').value=p.car||'';
+      $('partPlate').value=p.plate||'';
+      $('partCategory').value=p.category||'';
+      $('partClass').value=p.className||'';
+
+      $('partServicePlot').value=p.servicePlot||'';
+      $('partServiceType').value=p.serviceType||'';
+      $('partServiceManager').value=p.serviceManager||'';
+      $('partServicePhone').value=p.servicePhone||'';
+      $('partSharedService').value=p.sharedService?'si':'no';
+      $('partSharedWith').value=p.sharedWith||'';
+
+      $('docLicence').checked=!!p.documents?.licence;
+      $('docVehicle').checked=!!p.documents?.vehicle;
+      $('docInsurance').checked=!!p.documents?.insurance;
+      $('docScrutineering').checked=!!p.documents?.scrutineering;
+
+      $('partHotel').value=p.hotel||'';
+      $('partRoom').value=p.room||'';
+      $('partCheckin').value=p.checkin||'';
+      $('partCheckout').value=p.checkout||'';
+      $('partHotelAddress').value=p.hotelAddress||'';
+
+
+      $('partNotes').value=p.notes||'';
+
+      $('participantProfileModal').classList.add('show');
+    }
+
+    function closeParticipantProfileModal(){
+      $('participantProfileModal').classList.remove('show');
+    }
+
+    function saveParticipantProfile(){
+      const personId=$('participantPersonId').value;
+      if(!personId) return;
+
+      const profiles=getProfiles();
+      const existing=profiles[personId] || {};
+
+      existing.participant={
+        number:$('partNumber').value.trim(),
+        team:$('partTeam').value.trim(),
+        driver:$('partDriver').value.trim(),
+        codriver:$('partCodriver').value.trim(),
+        car:$('partCar').value.trim(),
+        plate:$('partPlate').value.trim(),
+        category:$('partCategory').value.trim(),
+        className:$('partClass').value.trim(),
+
+        servicePlot:$('partServicePlot').value.trim(),
+        serviceType:$('partServiceType').value,
+        serviceManager:$('partServiceManager').value.trim(),
+        servicePhone:$('partServicePhone').value.trim(),
+        sharedService:$('partSharedService').value==='si',
+        sharedWith:$('partSharedWith').value.trim(),
+
+        documents:{
+          licence:$('docLicence').checked,
+          vehicle:$('docVehicle').checked,
+          insurance:$('docInsurance').checked,
+          scrutineering:$('docScrutineering').checked
+        },
+
+        hotel:$('partHotel').value.trim(),
+        room:$('partRoom').value.trim(),
+        checkin:$('partCheckin').value,
+        checkout:$('partCheckout').value,
+        hotelAddress:$('partHotelAddress').value.trim(),
+
+        meals:{
+          friDinner:$('partMealFriDinner').checked,
+          satBreakfast:$('partMealSatBreakfast').checked,
+          satLunch:$('partMealSatLunch').checked,
+          satDinner:$('partMealSatDinner').checked,
+          sunBreakfast:$('partMealSunBreakfast').checked,
+          sunLunch:$('partMealSunLunch').checked
+        },
+
+        notes:$('partNotes').value.trim()
+      };
+
+      profiles[personId]=existing;
+      saveProfiles(profiles);
+      closeParticipantProfileModal();
+      alert('Ficha de participante guardada.');
+    }
+
     function openProfileModal(personId){
       const person=getPeople().find(p=>p.id===personId);
       if(!person) return;
@@ -1120,10 +1422,112 @@
       alert('Ficha guardada.');
     }
 
+
+    function getDocuments(){
+      return JSON.parse(localStorage.getItem(STORAGE.documents) || '[]');
+    }
+
+    function saveDocuments(list){
+      localStorage.setItem(STORAGE.documents, JSON.stringify(list));
+    }
+
+    function renderDocuments(){
+      const docs=getDocuments();
+      const catLabel={
+        ROADBOOK:'Roadbook',
+        TC:'TC / Tramos',
+        TABLON:'Tablón'
+      };
+
+      $('documentsBody').innerHTML = docs.length ? docs
+        .slice()
+        .sort((a,b)=>b.createdAt.localeCompare(a.createdAt))
+        .map(d=>`
+          <tr>
+            <td><span class="pill orange">${catLabel[d.category]||d.category}</span></td>
+            <td>
+              <strong>${d.title}</strong>
+              ${d.description?`<br><span class="muted">${d.description}</span>`:''}
+            </td>
+            <td>${d.fileName||'-'}</td>
+            <td>${new Date(d.createdAt).toLocaleString('es-ES')}</td>
+            <td>
+              <button class="btn small" onclick="openDocument('${d.id}')">Abrir</button>
+              <button class="btn small danger" onclick="deleteDocument('${d.id}')">Eliminar</button>
+            </td>
+          </tr>
+        `).join('')
+        : '<tr><td colspan="5" class="muted">Todavía no hay documentos subidos.</td></tr>';
+    }
+
+    function saveDocument(){
+      const title=$('docTitle').value.trim();
+      const category=$('docCategory').value;
+      const description=$('docDescription').value.trim();
+      const file=$('docFile').files[0];
+
+      if(!title){
+        alert('Introduce un título.');
+        return;
+      }
+      if(!file){
+        alert('Selecciona un archivo.');
+        return;
+      }
+
+      // localStorage suele tener un límite reducido (~5 MB).
+      if(file.size > 2.5 * 1024 * 1024){
+        alert('Para esta versión de prueba usa archivos menores de 2,5 MB. Con Firebase quitaremos esta limitación.');
+        return;
+      }
+
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try{
+          const docs=getDocuments();
+          docs.push({
+            id:'DOC-'+Date.now(),
+            title,
+            category,
+            description,
+            fileName:file.name,
+            mime:file.type || 'application/octet-stream',
+            dataUrl:reader.result,
+            createdAt:new Date().toISOString()
+          });
+          saveDocuments(docs);
+          $('docTitle').value='';
+          $('docDescription').value='';
+          $('docFile').value='';
+          renderDocuments();
+          alert('Documento guardado.');
+        }catch(e){
+          alert('No se pudo guardar. El navegador puede haberse quedado sin espacio.');
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function openDocument(id){
+      const d=getDocuments().find(x=>x.id===id);
+      if(!d || !d.dataUrl) return;
+      const w=window.open();
+      if(w){
+        w.document.write(`<iframe src="${d.dataUrl}" style="position:fixed;inset:0;width:100%;height:100%;border:0"></iframe>`);
+      }
+    }
+
+    function deleteDocument(id){
+      if(!confirm('¿Eliminar este documento?')) return;
+      saveDocuments(getDocuments().filter(d=>d.id!==id));
+      renderDocuments();
+    }
+
     function renderAll(){
       renderStats();
       renderTags();
       renderPeople();
+      renderDocuments();
     }
 
     seed();

@@ -6,215 +6,255 @@
   <meta name="theme-color" content="#050608" />
   <title>VIP · G6k-Z3</title>
   <style>
-    :root {
-      --bg:#050608;
-      --panel:#0d1015;
-      --panel2:#151a22;
-      --text:#f5f7fb;
-      --muted:#a6adb7;
-      --accent:#ff7a00;
-      --line:rgba(255,122,0,.75);
-      --shadow:0 20px 55px rgba(0,0,0,.5);
+    :root{
+      --bg:#050608;--text:#f5f7fb;--muted:#9fa7b2;--accent:#ff7a00;
+      --green:#2bd27f;--line:rgba(255,255,255,.09);--shadow:0 18px 55px rgba(0,0,0,.48);
     }
-
-    * { box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-    html,body { margin:0; width:100%; min-height:100%; background:var(--bg); }
-    body {
-      min-height:100svh;
-      color:var(--text);
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{
       font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 50% -10%,rgba(255,122,0,.16),transparent 32%),
+        radial-gradient(circle at 90% 20%,rgba(255,177,92,.06),transparent 24%),
+        linear-gradient(180deg,#080a0e,#050608 60%);
     }
-
-    button { font:inherit; }
-
-    .screen { display:none; min-height:100svh; }
-    .screen.active { display:block; }
-
-    /* PORTADA: no se cambia el diseño */
-    .home {
-      width:100vw;
-      height:100svh;
+    button,input{font:inherit}
+    input{
+      width:100%;background:#090c11;color:var(--text);border:1px solid rgba(255,255,255,.12);
+      border-radius:13px;padding:12px 13px;outline:none;
+    }
+    input:focus{border-color:var(--accent)}
+    .hidden{display:none!important}
+    .app{
+      width:min(900px,100%);margin:0 auto;
+      padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 24px);
+    }
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .btn{
+      border:1px solid rgba(255,255,255,.1);background:#0d1219;color:var(--text);
+      border-radius:12px;padding:11px 13px;font-weight:850;cursor:pointer;
+    }
+    .btn.primary{background:var(--accent);color:#111;border-color:transparent}
+    .brand{font-weight:950;color:var(--accent);letter-spacing:.08em}
+    .hero{padding:20px 0 18px;border-bottom:1px solid var(--line);margin-bottom:16px}
+    .eyebrow{color:var(--accent);font-size:.75rem;font-weight:900;letter-spacing:.18em}
+    h1{margin:6px 0 6px;font-size:clamp(2.2rem,7vw,4rem);letter-spacing:-.04em}
+    .hero p{margin:0;color:var(--muted)}
+    .lookup,.card{
+      background:linear-gradient(180deg,rgba(18,24,33,.97),rgba(10,14,19,.97));
+      border:1px solid var(--line);border-radius:20px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px;
+    }
+    .lookup-row{display:flex;gap:10px}
+    .lookup-row input{flex:1}
+    .vip-pass{
+      min-height:210px;
       display:flex;
+      flex-direction:column;
       align-items:center;
       justify-content:center;
-      overflow:hidden;
-      background:#050608;
-    }
-
-    .cover-wrap {
-      position:relative;
-      width:100%;
-      height:100%;
-      max-width:1024px;
-      margin:0 auto;
-    }
-
-    .cover {
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      object-position:center center;
-      display:block;
-      user-select:none;
-      -webkit-user-drag:none;
-    }
-
-    /* Zonas táctiles invisibles sobre los 6 bloques */
-    .hotspot {
-      position:absolute;
-      border:0;
-      background:transparent;
-      cursor:pointer;
-      z-index:5;
-      border-radius:18px;
-    }
-    .hotspot:focus-visible {
-      outline:2px solid var(--accent);
-      outline-offset:2px;
-    }
-
-    /* Coordenadas relativas sobre la portada aprobada */
-    .hs-oficial       { left:26.0%; top:45.8%; width:22.6%; height:12.8%; }
-    .hs-prensa        { left:51.0%; top:45.8%; width:22.6%; height:12.8%; }
-    .hs-participante  { left:76.0%; top:45.8%; width:22.0%; height:12.8%; }
-
-    .hs-asistencia    { left:26.0%; top:61.0%; width:22.6%; height:12.8%; }
-    .hs-organizacion  { left:51.0%; top:61.0%; width:22.6%; height:12.8%; }
-    .hs-vip           { left:76.0%; top:61.0%; width:22.0%; height:12.8%; }
-
-    /* Pantallas internas */
-    .module {
-      min-height:100svh;
-      padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 24px);
-      background:
-        radial-gradient(circle at 80% 0%, rgba(255,122,0,.10), transparent 24%),
-        linear-gradient(180deg,#07090c,#050608);
-    }
-
-    .module-inner {
-      width:min(900px,100%);
-      margin:0 auto;
-    }
-
-    .topbar {
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      margin-bottom:22px;
-    }
-
-    .back {
-      border:1px solid rgba(255,255,255,.12);
-      color:var(--text);
-      background:#0d1117;
-      padding:11px 14px;
-      border-radius:13px;
-      font-weight:800;
-      cursor:pointer;
-    }
-
-    .brand {
-      font-weight:900;
-      letter-spacing:.08em;
-      color:var(--accent);
-    }
-
-    .hero {
-      padding:24px 0 16px;
-      border-bottom:1px solid rgba(255,255,255,.08);
-      margin-bottom:18px;
-    }
-
-    .eyebrow {
-      color:var(--accent);
-      font-size:.78rem;
-      font-weight:900;
-      letter-spacing:.17em;
-    }
-
-    h1 {
-      margin:7px 0 6px;
-      font-size:clamp(2rem,6vw,3.6rem);
-      letter-spacing:-.04em;
-    }
-
-    .hero p {
-      margin:0;
-      color:var(--muted);
-      font-size:1rem;
-    }
-
-    .grid {
-      display:grid;
-      grid-template-columns:repeat(2,minmax(0,1fr));
-      gap:14px;
-      margin-top:20px;
-    }
-
-    .card {
-      min-height:150px;
-      padding:18px;
-      border-radius:20px;
-      border:1px solid rgba(255,255,255,.08);
-      background:
-        linear-gradient(180deg,rgba(20,26,34,.95),rgba(10,14,19,.96));
-      box-shadow:var(--shadow);
-    }
-
-    .card h3 {
-      margin:0 0 8px;
-      font-size:1.08rem;
-    }
-
-    .card p {
-      margin:0;
-      color:var(--muted);
-      line-height:1.45;
-    }
-
-    .status {
-      display:inline-block;
-      margin-top:14px;
-      padding:6px 9px;
-      border-radius:999px;
-      background:rgba(255,122,0,.12);
-      color:#ffb36b;
-      font-size:.75rem;
-      font-weight:900;
-    }
-
-    .footer {
-      margin-top:26px;
       text-align:center;
-      color:#77808b;
-      font-size:.8rem;
-      letter-spacing:.08em;
+      background:
+        radial-gradient(circle at 50% 0%,rgba(255,122,0,.22),transparent 44%),
+        linear-gradient(180deg,#17140f,#0b0d11);
+      border:1px solid rgba(255,122,0,.28);
     }
-
-    @media (max-width:700px) {
-      .grid { grid-template-columns:1fr; }
+    .vip-crown{font-size:2.4rem;margin-bottom:10px}
+    .vip-pass h2{
+      margin:0;
+      font-size:clamp(2.4rem,10vw,5rem);
+      letter-spacing:.06em;
+      line-height:.95;
+      color:#fff;
+    }
+    .vip-pass .name{
+      margin-top:15px;
+      font-size:1.15rem;
+      font-weight:850;
+      color:#ffc184;
+    }
+    .vip-pass .sub{
+      margin-top:6px;
+      color:var(--muted);
+      font-size:.85rem;
+    }
+    .section-title{margin:0 0 12px;font-size:1.05rem}
+    .info-box{
+      white-space:pre-line;
+      padding:14px;
+      border-radius:15px;
+      border:1px solid var(--line);
+      background:#0a0e14;
+      line-height:1.55;
+    }
+    .schedule{
+      white-space:pre-line;
+      padding:14px;
+      border-radius:15px;
+      border:1px solid rgba(255,122,0,.22);
+      background:rgba(255,122,0,.06);
+      color:#ffe1c3;
+      line-height:1.6;
+    }
+    .docs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .doc{
+      display:block;text-decoration:none;color:var(--text);
+      padding:13px;border-radius:15px;border:1px solid var(--line);background:#0a0e14;
+    }
+    .doc:hover{border-color:rgba(255,122,0,.45)}
+    .doc .cat{
+      color:var(--accent);font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em
+    }
+    .doc strong{display:block;margin-top:6px}
+    .doc .desc{display:block;margin-top:6px;color:var(--muted);font-size:.82rem;line-height:1.35}
+    .muted{color:var(--muted)}
+    .footer{margin-top:24px;text-align:center;color:#78818c;font-size:.78rem;letter-spacing:.08em}
+    @media(max-width:650px){
+      .docs{grid-template-columns:1fr}
+      .lookup-row{flex-direction:column}
     }
   </style>
 </head>
 <body>
-  <section id="vip" class="screen active module">
-    <div class="module-inner">
-      <div class="topbar"><button class="back" onclick="location.href='index.html'">← Inicio</button><div class="brand">G6K® · Z3</div></div>
-      <div class="hero">
-        <div class="eyebrow">MÓDULO</div>
-        <h1>VIP</h1>
-        <p>Accesos e información exclusiva.</p>
-      </div>
-      <div class="grid">
-        <div class="card"><h3>Acreditación</h3><p>Identificación y nivel de acceso VIP.</p><span class="status">EN DESARROLLO</span></div>
-        <div class="card"><h3>Zonas autorizadas</h3><p>Hospitality, zonas privadas y accesos permitidos.</p><span class="status">EN DESARROLLO</span></div>
-        <div class="card"><h3>Información</h3><p>Horarios, ubicaciones y servicios disponibles.</p><span class="status">EN DESARROLLO</span></div>
-        <div class="card"><h3>Invitaciones</h3><p>Datos de invitación y acompañantes asociados.</p><span class="status">EN DESARROLLO</span></div>
-      </div>
-      <div class="footer">G6K® 2026</div>
+  <main class="app">
+    <div class="topbar">
+      <button class="btn" onclick="location.href='index.html'">← Inicio</button>
+      <div class="brand">G6K® · Z3</div>
     </div>
-  </section>
+
+    <section class="hero">
+      <div class="eyebrow">MÓDULO</div>
+      <h1>VIP</h1>
+      <p>Información y tablón para invitados acreditados.</p>
+    </section>
+
+    <section class="lookup">
+      <div style="font-weight:900;margin-bottom:8px">Modo de prueba</div>
+      <div class="muted" style="font-size:.86rem;margin-bottom:12px">
+        Introduce una TAG con perfil VIP. Más adelante se abrirá automáticamente al leer la TAG NFC.
+      </div>
+
+      <div class="lookup-row">
+        <input id="tagLookup" placeholder="Ej. Z3-000030">
+        <button class="btn primary" onclick="loadByTag()">Entrar</button>
+      </div>
+
+      <div id="lookupError" class="muted" style="margin-top:10px"></div>
+    </section>
+
+    <section id="vipContent" class="hidden">
+      <div class="card vip-pass">
+        <div class="vip-crown">◆</div>
+        <h2>ACCESO VIP</h2>
+        <div id="vName" class="name">—</div>
+        <div id="vGroup" class="sub"></div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Información</h3>
+        <div id="vInfo" class="info-box">Sin información adicional.</div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Horarios</h3>
+        <div id="vSchedule" class="schedule">No hay horarios publicados.</div>
+      </div>
+
+      <div class="card">
+        <h3 class="section-title">Tablón de anuncios</h3>
+        <div id="boardList" class="docs"></div>
+      </div>
+    </section>
+
+    <div class="footer">G6K® 2026 · G6k-Z3</div>
+  </main>
+
+  <script>
+    const STORAGE={
+      tags:'g6k_z3_admin_tags',
+      people:'g6k_z3_admin_people',
+      profiles:'g6k_z3_admin_profiles',
+      documents:'g6k_z3_event_documents'
+    };
+
+    const $=id=>document.getElementById(id);
+    const read=key=>JSON.parse(localStorage.getItem(key)||(key===STORAGE.profiles?'{}':'[]'));
+
+    function renderBoard(){
+      const docs=read(STORAGE.documents)
+        .filter(d=>d.category==='TABLON')
+        .sort((a,b)=>b.createdAt.localeCompare(a.createdAt));
+
+      if(!docs.length){
+        $('boardList').innerHTML='<div class="muted">No hay anuncios publicados.</div>';
+        return;
+      }
+
+      $('boardList').innerHTML=docs.map(d=>`
+        <a class="doc" href="${d.dataUrl}" target="_blank" rel="noopener">
+          <span class="cat">Tablón de anuncios</span>
+          <strong>${d.title}</strong>
+          ${d.description?`<span class="desc">${d.description}</span>`:''}
+        </a>
+      `).join('');
+    }
+
+    function loadByTag(){
+      const id=$('tagLookup').value.trim().toUpperCase();
+      const tags=read(STORAGE.tags);
+      const people=read(STORAGE.people);
+      const profiles=read(STORAGE.profiles);
+
+      const tag=tags.find(t=>t.id===id);
+
+      if(!tag){
+        $('lookupError').textContent='TAG no encontrada.';
+        $('vipContent').classList.add('hidden');
+        return;
+      }
+
+      if(tag.status==='blocked'){
+        $('lookupError').textContent='Esta TAG está bloqueada.';
+        $('vipContent').classList.add('hidden');
+        return;
+      }
+
+      const person=people.find(p=>p.id===tag.personId);
+
+      if(!person){
+        $('lookupError').textContent='La TAG no está asignada a ninguna persona.';
+        $('vipContent').classList.add('hidden');
+        return;
+      }
+
+      if((tag.role||person.role)!=='VIP'){
+        $('lookupError').textContent='Esta TAG no corresponde al perfil VIP.';
+        $('vipContent').classList.add('hidden');
+        return;
+      }
+
+      const profile=profiles[person.id]||{};
+      const p=profile.vip||{};
+
+      $('lookupError').textContent='';
+      $('vName').textContent=(person.name+' '+person.surname).trim();
+      $('vGroup').textContent=[p.group,p.accreditation].filter(Boolean).join(' · ');
+      $('vInfo').textContent=p.info||'Sin información adicional.';
+      $('vSchedule').textContent=p.schedule||'No hay horarios publicados.';
+
+      renderBoard();
+      $('vipContent').classList.remove('hidden');
+
+      const url=new URL(window.location.href);
+      url.searchParams.set('tag',id);
+      history.replaceState({},'',url);
+    }
+
+    const initialTag=new URLSearchParams(location.search).get('tag');
+    if(initialTag){
+      $('tagLookup').value=initialTag;
+      loadByTag();
+    }
+  </script>
 </body>
 </html>

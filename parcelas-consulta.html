@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050608">
+<title>Mapa de asistencia · G6k-Z3</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#050608;--text:#f5f7fb;--muted:#9fa7b2;--accent:#ff7a00;--green:#2bd27f;--blue:#5ca9ff;--line:rgba(255,255,255,.09)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 88% 0%,rgba(255,122,0,.13),transparent 25%),linear-gradient(180deg,#080a0e,#050608 60%)}
+.app{width:min(1200px,100%);margin:auto;padding:14px}.top{display:flex;align-items:center;gap:11px;margin-bottom:14px}.logo{width:48px;height:48px;border-radius:14px;background:var(--accent);color:#111;display:grid;place-items:center;font-weight:1000}.top strong{letter-spacing:.05em}.top small{display:block;color:var(--muted)}
+.hero{padding:14px 0 16px;border-bottom:1px solid var(--line)}.eyebrow{color:var(--accent);font-size:.72rem;letter-spacing:.18em;font-weight:950}h1{margin:6px 0;font-size:clamp(2rem,6vw,3.5rem);letter-spacing:-.045em}.hero p{margin:0;color:var(--muted)}
+.search{display:flex;gap:8px;padding:13px 0;flex-wrap:wrap}.search input{flex:1;min-width:220px;background:#080c11;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:12px;padding:12px 13px;font:inherit;outline:none}.search button{border:0;border-radius:12px;padding:12px 14px;background:var(--accent);color:#111;font-weight:950}
+.result{display:none;margin-bottom:12px;padding:13px;border:1px solid rgba(43,210,127,.23);background:rgba(43,210,127,.07);border-radius:15px}.result.show{display:block}.result strong{font-size:1.08rem}.result span{display:block;color:#a9eec6;margin-top:4px}
+#map{height:68svh;min-height:480px;border:1px solid var(--line);border-radius:19px;overflow:hidden}
+.leaflet-control-layers,.leaflet-bar a{background:#111820!important;color:#fff!important;border-color:#313842!important}.leaflet-control-layers label{color:#e8edf3}
+.parcel-label{background:transparent;border:0}.parcel-chip{min-width:58px;text-align:center;padding:5px 8px;border-radius:9px;background:rgba(6,8,11,.9);border:2px solid #ff7a00;color:#fff;font-weight:1000;box-shadow:0 4px 15px rgba(0,0,0,.45);white-space:nowrap}.parcel-chip.assigned{border-color:#2bd27f}.parcel-chip.shared{border-color:#5ca9ff}.parcel-chip small{display:block;font-size:.63rem;color:#ccd3dc;margin-top:1px}
+.empty{padding:16px;color:var(--muted);text-align:center}.footer{text-align:center;color:#737d88;font-size:.75rem;letter-spacing:.08em;margin-top:18px}
+</style>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+<main class="app">
+  <div class="top"><div class="logo">G6K</div><div><strong>G6k-Z3</strong><small>Parque de asistencia</small></div></div>
+  <section class="hero"><div class="eyebrow">CONSULTA</div><h1>Encuentra tu parcela</h1><p>Busca por nombre del piloto o por dorsal cuando ya esté asignado.</p></section>
+  <div class="search"><input id="q" placeholder="Piloto o dorsal…" onkeydown="if(event.key==='Enter')searchParcel()"><button onclick="searchParcel()">BUSCAR</button></div>
+  <div id="result" class="result"></div>
+  <div id="map"></div>
+  <div class="footer">G6K® 2026 · G6k-Z3</div>
+</main>
+<script>
+
+const firebaseConfig={
+  apiKey:"AIzaSyD_vcPOimDMu4hLxe6mb0B0hZ85ZJwSYTA",
+  authDomain:"g6k-z3.firebaseapp.com",
+  databaseURL:"https://g6k-z3-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId:"g6k-z3",
+  storageBucket:"g6k-z3.firebasestorage.app",
+  messagingSenderId:"1007699316093",
+  appId:"1:1007699316093:web:1d00b1f102fd43acb91014"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db=firebase.database(),$=id=>document.getElementById(id);
+let data={view:null,parcels:{}},map=null,layers={};
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function init(){
+  map=L.map('map').setView([38.5,-4.5],6);
+  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:20,attribution:'© OpenStreetMap'});
+  const sat=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:20,attribution:'Tiles © Esri'});
+  sat.addTo(map);L.control.layers({'Satélite':sat,'Mapa':osm}).addTo(map);
+}
+function style(p){const assigned=(p.people||[]).length>0,shared=(p.people||[]).length>1||(p.people||[]).some(x=>x.comparte);return{color:shared?'#5ca9ff':assigned?'#2bd27f':'#ff7a00',weight:3,fillColor:shared?'#5ca9ff':assigned?'#2bd27f':'#ff7a00',fillOpacity:assigned?.25:.13}}
+function chip(p){const people=p.people||[],d=people.map(x=>x.dorsal).filter(Boolean),n=people.map(x=>x.piloto).filter(Boolean);const shared=people.length>1||people.some(x=>x.comparte);let second=d.length?'#'+d.join(' / #'):n.length?n.map(x=>x.split(' ')[0]).join(' / '):'';return `<div class="parcel-chip ${people.length?'assigned':''} ${shared?'shared':''}">${esc(p.label)}${second?`<small>${esc(second)}</small>`:''}</div>`}
+function render(){
+  Object.values(layers).forEach(x=>{map.removeLayer(x.poly);map.removeLayer(x.label)});layers={};
+  Object.entries(data.parcels||{}).forEach(([key,p])=>{
+    if(!p.geometry)return;
+    let poly=null;L.geoJSON({type:'Feature',properties:{},geometry:p.geometry},{style:()=>style(p)}).eachLayer(l=>poly=l);
+    if(!poly)return;poly.addTo(map);
+    const center=poly.getBounds().getCenter();
+    const label=L.marker(center,{interactive:false,icon:L.divIcon({className:'parcel-label',html:chip(p),iconSize:null})}).addTo(map);
+    const people=(p.people||[]).map(x=>`${x.dorsal?'#'+x.dorsal+' · ':''}${x.piloto}`).join('<br>');
+    poly.bindPopup(`<strong>${esc(p.label)}</strong>${people?'<br>'+people:'<br>Parcela sin asignar'}`);
+    layers[key]={poly,label};
+  });
+  if(data.view)map.setView([data.view.lat,data.view.lng],data.view.zoom||18);
+}
+function searchParcel(){
+  const q=$('q').value.trim().toLowerCase();if(!q)return;
+  let found=null;
+  Object.entries(data.parcels||{}).some(([key,p])=>{
+    const person=(p.people||[]).find(x=>String(x.dorsal||'').toLowerCase()===q||String(x.piloto||'').toLowerCase().includes(q));
+    if(person){found={key,p,person};return true}return false;
+  });
+  const box=$('result');
+  if(!found){box.classList.add('show');box.innerHTML='<strong>No encontrado</strong><span>Comprueba el nombre o espera a que Organización asigne la parcela.</span>';return}
+  box.classList.add('show');box.innerHTML=`<strong>${esc(found.person.dorsal?'Dorsal '+found.person.dorsal+' · ':'')}${esc(found.person.piloto)}</strong><span>Parcela ${esc(found.p.label)}</span>`;
+  const layer=layers[found.key]?.poly;if(layer){map.fitBounds(layer.getBounds(),{padding:[70,70],maxZoom:20});layer.openPopup();layer.setStyle({color:'#fff',weight:6});setTimeout(()=>layer.setStyle(style(found.p)),1100)}
+}
+init();
+db.ref('publicAssistanceMap').on('value',s=>{data=s.val()||{view:null,parcels:{}};render()});
+</script>
+</body>
+</html>

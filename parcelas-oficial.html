@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050608">
+  <title>Parcelas · Oficial · G6k-Z3</title>
+  <style>
+    :root{--bg:#050608;--panel:#10151d;--panel2:#080c11;--text:#f5f7fb;--muted:#9fa7b2;--accent:#ff7a00;--green:#2bd27f;--red:#ff5f67;--blue:#5ca9ff;--line:rgba(255,255,255,.09);--shadow:0 20px 60px rgba(0,0,0,.48)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)} body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 90% 0%,rgba(255,122,0,.12),transparent 25%),linear-gradient(180deg,#080a0e,#050608 60%)}
+    button,input,select,textarea{font:inherit} button{cursor:pointer} .hidden{display:none!important}
+    .auth{position:fixed;inset:0;z-index:99;display:grid;place-items:center;padding:18px;background:#050608} .auth-card{width:min(430px,100%);padding:22px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,#171d26,#0b0f15);box-shadow:var(--shadow)} .logo{width:60px;height:60px;border-radius:17px;display:grid;place-items:center;background:var(--accent);color:#111;font-weight:1000;margin-bottom:16px} .auth-card h1{margin:0 0 5px} .auth-card p{color:var(--muted);line-height:1.45} .auth-card input{margin-bottom:10px}
+    input,select,textarea{width:100%;background:#080c11;border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:12px;padding:11px 12px;outline:none} input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+    .app{width:min(1500px,100%);margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 24px)}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px;flex-wrap:wrap} .brand{display:flex;align-items:center;gap:10px} .brand .logo{width:46px;height:46px;margin:0;border-radius:13px} .brand strong{letter-spacing:.05em} .brand small{display:block;color:var(--muted)} .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .btn{border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#0d1219;color:var(--text);padding:10px 12px;font-weight:850} .btn.primary{background:var(--accent);color:#111;border-color:transparent} .btn.danger{color:#ff9a9f;border-color:rgba(255,95,103,.28);background:rgba(255,95,103,.08)} .btn.small{padding:7px 9px;font-size:.78rem}
+    .hero{padding:14px 0 17px;border-bottom:1px solid var(--line);margin-bottom:12px} .eyebrow{color:var(--accent);font-weight:950;font-size:.72rem;letter-spacing:.18em} h1{margin:5px 0 5px;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.045em} .hero p{margin:0;color:var(--muted)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px} .stat{background:linear-gradient(180deg,#121821,#0a0e13);border:1px solid var(--line);border-radius:16px;padding:13px} .stat strong{display:block;font-size:1.5rem} .stat span{color:var(--muted);font-size:.77rem}
+    .layout{display:grid;grid-template-columns:minmax(380px,520px) 1fr;gap:12px;align-items:start} .card{background:linear-gradient(180deg,rgba(18,24,33,.98),rgba(9,13,18,.98));border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:var(--shadow)}
+    .toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap} .toolbar input{flex:1 1 220px} .toolbar select{width:auto;min-width:155px}
+    .list{display:grid;gap:9px;max-height:68svh;overflow:auto;padding-right:2px} .request{border:1px solid var(--line);border-radius:15px;padding:12px;background:#090d12} .request.assigned{border-color:rgba(43,210,127,.24)} .request-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start} .dorsal{min-width:54px;height:54px;border-radius:13px;background:var(--accent);color:#111;display:grid;place-items:center;font-weight:1000;font-size:1.35rem} .r-main{flex:1} .r-main strong{display:block;font-size:1rem} .r-main small{color:var(--muted)} .pill{display:inline-block;border-radius:999px;padding:5px 8px;font-size:.67rem;font-weight:900} .pending{background:rgba(255,122,0,.10);color:#ffbd7e} .assignedP{background:rgba(43,210,127,.10);color:#85efb4} .meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;color:#cbd2da;font-size:.78rem} .share{margin-top:8px;padding:8px;border-radius:10px;background:rgba(92,169,255,.07);border:1px solid rgba(92,169,255,.18);color:#acd4ff;font-size:.78rem} .request-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+    .map-card{padding:0;overflow:hidden} .map-head{padding:13px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap} .map-head h2{font-size:1rem;margin:0} .map-head p{margin:3px 0 0;color:var(--muted);font-size:.77rem} .map-tools{display:flex;gap:7px;align-items:center;flex-wrap:wrap} .map-wrap{position:relative;min-height:610px;background:#06080b;overflow:hidden;touch-action:none} .map-wrap.no-map::before{content:'SUBE EL MAPA DE ASISTENCIA';position:absolute;inset:0;display:grid;place-items:center;color:#555f69;font-weight:950;letter-spacing:.12em} #mapImage{display:block;width:100%;height:auto;min-height:610px;object-fit:contain;background:#070a0e} .plot{position:absolute;transform:translate(-50%,-50%);min-width:52px;height:38px;padding:0 9px;border-radius:10px;display:grid;place-items:center;background:rgba(255,122,0,.94);color:#111;font-weight:1000;border:2px solid rgba(255,255,255,.76);box-shadow:0 6px 22px rgba(0,0,0,.45);cursor:grab;user-select:none} .plot.shared{background:rgba(92,169,255,.94)} .plot .miniD{font-size:.64rem;line-height:1;margin-top:-4px} .placement-banner{display:none;padding:10px 12px;background:rgba(255,122,0,.12);border-bottom:1px solid rgba(255,122,0,.25);color:#ffc78f;font-weight:850;font-size:.82rem} .placement-banner.show{display:block}
+    .modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.72);display:none;place-items:center;padding:16px} .modal.show{display:grid} .modal-card{width:min(480px,100%);max-height:90svh;overflow:auto;background:linear-gradient(180deg,#171d26,#0b0f15);border:1px solid var(--line);border-radius:20px;padding:17px} .modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px} .modal-head h3{margin:0} label{display:flex;flex-direction:column;gap:6px;color:#dde3ea;font-size:.82rem;font-weight:700;margin-bottom:10px} .muted{color:var(--muted)} .error{color:#ff999f;font-size:.8rem;min-height:20px}
+    @media(max-width:980px){.layout{grid-template-columns:1fr} .list{max-height:none} .map-wrap,#mapImage{min-height:500px}} @media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)} .meta{grid-template-columns:1fr} .map-wrap,#mapImage{min-height:420px}}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+<section id="auth" class="auth">
+  <div class="auth-card"><div class="logo">G6K</div><h1>Parcelas · OFICIAL</h1><p>Acceso protegido para gestionar solicitudes y distribuir las parcelas en el mapa de asistencia.</p><input id="email" type="email" placeholder="Correo ADMIN"><input id="password" type="password" placeholder="Contraseña"><button class="btn primary" style="width:100%" onclick="login()">Entrar</button><div id="authError" class="error"></div></div>
+</section>
+
+<main id="app" class="app hidden">
+  <div class="top"><div class="brand"><div class="logo">G6K</div><div><strong>G6k-Z3 · PARCELAS</strong><small>Panel oficial de asistencia</small></div></div><div class="actions"><span id="syncState" class="muted" style="font-size:.78rem">Firebase</span><button class="btn small" onclick="location.href='admin.html'">ADMIN</button><button class="btn small danger" onclick="logout()">Salir</button></div></div>
+  <section class="hero"><div class="eyebrow">ORGANIZACIÓN</div><h1>Mapa de asistencia</h1><p>Recibe las solicitudes de los inscritos, coloca las parcelas sobre el plano y asígnalas.</p></section>
+
+  <div class="stats"><div class="stat"><strong id="stTotal">0</strong><span>Solicitudes</span></div><div class="stat"><strong id="stPending">0</strong><span>Pendientes</span></div><div class="stat"><strong id="stAssigned">0</strong><span>Asignadas</span></div><div class="stat"><strong id="stShared">0</strong><span>Compartidas</span></div></div>
+
+  <div class="layout">
+    <section class="card">
+      <div class="toolbar"><input id="search" placeholder="Buscar dorsal, piloto o equipo…" oninput="renderRequests()"><select id="filter" onchange="renderRequests()"><option value="all">Todas</option><option value="pendiente">Pendientes</option><option value="asignada">Asignadas</option><option value="compartida">Compartidas</option></select></div>
+      <div id="requests" class="list"></div>
+    </section>
+
+    <section class="card map-card">
+      <div class="map-head"><div><h2>Plano de parcelas</h2><p>Sube el mapa y coloca cada parcela. Puedes arrastrarlas después.</p></div><div class="map-tools"><input id="mapFile" type="file" accept="image/*" style="display:none" onchange="uploadMap(event)"><button class="btn small" onclick="$('mapFile').click()">Subir mapa</button><button class="btn small danger" onclick="removeMap()">Quitar mapa</button></div></div>
+      <div id="placementBanner" class="placement-banner">Haz clic en el mapa para colocar la parcela.</div>
+      <div id="mapWrap" class="map-wrap no-map" onclick="placeOnMap(event)"><img id="mapImage" alt="Mapa de asistencia"><div id="plotsLayer"></div></div>
+    </section>
+  </div>
+</main>
+
+<div id="assignModal" class="modal">
+  <div class="modal-card"><div class="modal-head"><h3>Asignar parcela</h3><button class="btn small" onclick="closeAssign()">Cerrar</button></div><div id="assignWho" class="muted" style="margin-bottom:12px"></div><label>Nº / nombre de parcela<input id="parcelLabel" placeholder="Ej. P01"></label><label>Notas de ubicación<input id="parcelNotes" placeholder="Ej. Junto a salida / lado izquierdo"></label><div class="error" id="assignError"></div><button class="btn primary" style="width:100%" onclick="startPlacement()">Colocar en el mapa</button></div>
+</div>
+
+<script>
+  const firebaseConfig={
+      apiKey: "AIzaSyD_vcPOimDMu4hLxe6mb0B0hZ85ZJwSYTA",
+      authDomain: "g6k-z3.firebaseapp.com",
+      databaseURL: "https://g6k-z3-default-rtdb.europe-west1.firebasedatabase.app/",
+      projectId: "g6k-z3",
+      storageBucket: "g6k-z3.firebasestorage.app",
+      messagingSenderId: "1007699316093",
+      appId: "1:1007699316093:web:1d00b1f102fd43acb91014"
+    };
+  firebase.initializeApp(firebaseConfig);
+  const auth=firebase.auth(); const db=firebase.database(); const ADMIN_UID='vAU0N9YTYiR4c8rIY95kIpPFPmY2'; const $=id=>document.getElementById(id);
+  let requests={}, plots={}, mapData=null, pendingAssignment=null, dragging=null;
+
+  function login(){ $('authError').textContent=''; auth.signInWithEmailAndPassword($('email').value.trim(),$('password').value).catch(e=>{ console.error(e); $('authError').textContent='No se pudo iniciar sesión.'; }); }
+  function logout(){ auth.signOut(); }
+  auth.onAuthStateChanged(user=>{
+    if(user && user.uid===ADMIN_UID){ $('auth').style.display='none'; $('app').classList.remove('hidden'); subscribe(); }
+    else{ $('app').classList.add('hidden'); $('auth').style.display='grid'; if(user){ $('authError').textContent='Esta cuenta no está autorizada.'; auth.signOut(); } }
+  });
+
+  function subscribe(){
+    db.ref('assistanceRequests').on('value',s=>{requests=s.val()||{}; renderRequests(); renderStats();});
+    db.ref('assistanceManagement/plots').on('value',s=>{plots=s.val()||{}; renderPlots();});
+    db.ref('assistanceManagement/map').on('value',s=>{mapData=s.val()||null; renderMap();});
+  }
+
+  function renderStats(){ const a=Object.values(requests); $('stTotal').textContent=a.length; $('stPending').textContent=a.filter(x=>x.status!=='asignada').length; $('stAssigned').textContent=a.filter(x=>x.status==='asignada').length; $('stShared').textContent=a.filter(x=>x.comparte).length; }
+  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+  function renderRequests(){
+    const q=$('search').value.trim().toLowerCase(); const f=$('filter').value;
+    const rows=Object.entries(requests).filter(([id,r])=>{
+      const hay=[r.dorsal,r.piloto,r.equipo,r.tipo,r.compartePiloto].join(' ').toLowerCase();
+      const mq=!q||hay.includes(q); let mf=true; if(f==='pendiente') mf=r.status!=='asignada'; if(f==='asignada') mf=r.status==='asignada'; if(f==='compartida') mf=!!r.comparte; return mq&&mf;
+    }).sort((a,b)=>Number(a[1].dorsal||9999)-Number(b[1].dorsal||9999));
+    $('requests').innerHTML=rows.length?rows.map(([id,r])=>`<article class="request ${r.status==='asignada'?'assigned':''}"><div class="request-head"><div class="dorsal">${esc(r.dorsal)}</div><div class="r-main"><strong>${esc(r.piloto)}</strong><small>${esc(r.equipo||'Sin equipo')}</small></div><span class="pill ${r.status==='asignada'?'assignedP':'pending'}">${r.status==='asignada'?'PARCELA '+esc(r.parcela||''):'PENDIENTE'}</span></div><div class="meta"><span>🚚 ${esc(r.tipo)}${r.cantidad?` · ${r.cantidad} ud.`:''}</span><span>☎ ${esc(r.telefono||'-')}</span><span>${esc(r.detalle||'Sin detalle')}</span><span>${r.copiloto?'Copiloto: '+esc(r.copiloto):''}</span></div>${r.comparte?`<div class="share">🔗 Comparte con <strong>${esc(r.compartePiloto)}</strong>${r.comparteDorsal?' · dorsal '+esc(r.comparteDorsal):''}</div>`:''}${r.observaciones?`<div class="muted" style="font-size:.76rem;margin-top:8px">${esc(r.observaciones)}</div>`:''}<div class="request-actions"><button class="btn small primary" onclick="openAssign('${id}')">${r.status==='asignada'?'Mover / cambiar':'Asignar parcela'}</button>${r.status==='asignada'?`<button class="btn small" onclick="focusPlot('${id}')">Ver en mapa</button>`:''}<button class="btn small danger" onclick="deleteRequest('${id}')">Eliminar</button></div></article>`).join(''):'<div class="muted">No hay solicitudes con este filtro.</div>';
+  }
+
+  function openAssign(id){ const r=requests[id]; if(!r)return; pendingAssignment={requestId:id,label:r.parcela||'',notes:''}; $('assignWho').textContent=`Dorsal ${r.dorsal} · ${r.piloto}`; $('parcelLabel').value=r.parcela||''; const existing=Object.values(plots).find(p=>p.requestId===id); $('parcelNotes').value=existing?.notes||''; $('assignError').textContent=''; $('assignModal').classList.add('show'); }
+  function closeAssign(){ $('assignModal').classList.remove('show'); if(pendingAssignment && pendingAssignment.placing) pendingAssignment=null; $('placementBanner').classList.remove('show'); }
+  function startPlacement(){ if(!mapData?.dataUrl){$('assignError').textContent='Primero sube el mapa de asistencia.';return;} const label=$('parcelLabel').value.trim(); if(!label){$('assignError').textContent='Indica el número o nombre de parcela.';return;} pendingAssignment.label=label; pendingAssignment.notes=$('parcelNotes').value.trim(); pendingAssignment.placing=true; $('assignModal').classList.remove('show'); $('placementBanner').textContent=`Colocando ${label} · haz clic en el mapa`; $('placementBanner').classList.add('show'); }
+
+  async function placeOnMap(ev){
+    if(!pendingAssignment?.placing || ev.target.closest('.plot')) return;
+    const rect=$('mapWrap').getBoundingClientRect(); const x=((ev.clientX-rect.left)/rect.width)*100; const y=((ev.clientY-rect.top)/rect.height)*100;
+    const id='plot_'+pendingAssignment.requestId; const data={requestId:pendingAssignment.requestId,label:pendingAssignment.label,notes:pendingAssignment.notes,x:+x.toFixed(3),y:+y.toFixed(3),updatedAt:firebase.database.ServerValue.TIMESTAMP};
+    const old=Object.entries(plots).find(([pid,p])=>p.requestId===pendingAssignment.requestId);
+    const updates={}; if(old && old[0]!==id) updates['assistanceManagement/plots/'+old[0]]=null; updates['assistanceManagement/plots/'+id]=data; updates['assistanceRequests/'+pendingAssignment.requestId+'/status']='asignada'; updates['assistanceRequests/'+pendingAssignment.requestId+'/parcela']=pendingAssignment.label;
+    await db.ref().update(updates); pendingAssignment=null; $('placementBanner').classList.remove('show');
+  }
+
+  function renderMap(){ const img=$('mapImage'), wrap=$('mapWrap'); if(mapData?.dataUrl){img.src=mapData.dataUrl; wrap.classList.remove('no-map');}else{img.removeAttribute('src');wrap.classList.add('no-map');} }
+  function renderPlots(){ const layer=$('plotsLayer'); layer.innerHTML=''; Object.entries(plots).forEach(([id,p])=>{ const r=requests[p.requestId]||{}; const el=document.createElement('div'); el.className='plot'+(r.comparte?' shared':''); el.style.left=p.x+'%'; el.style.top=p.y+'%'; el.dataset.id=id; el.title=(p.label||'')+' · '+(r.piloto||''); el.innerHTML=`<div>${esc(p.label)}</div><div class="miniD">${r.dorsal?'#'+esc(r.dorsal):''}</div>`; el.addEventListener('pointerdown',e=>beginDrag(e,id)); layer.appendChild(el); }); }
+  function beginDrag(e,id){ e.stopPropagation(); const el=e.currentTarget; el.setPointerCapture(e.pointerId); dragging={id,el,pointerId:e.pointerId}; el.style.cursor='grabbing'; el.addEventListener('pointermove',dragMove); el.addEventListener('pointerup',dragEnd,{once:true}); }
+  function dragMove(e){ if(!dragging)return; const rect=$('mapWrap').getBoundingClientRect(); const x=Math.max(0,Math.min(100,((e.clientX-rect.left)/rect.width)*100)); const y=Math.max(0,Math.min(100,((e.clientY-rect.top)/rect.height)*100)); dragging.el.style.left=x+'%'; dragging.el.style.top=y+'%'; }
+  async function dragEnd(e){ if(!dragging)return; const rect=$('mapWrap').getBoundingClientRect(); const x=Math.max(0,Math.min(100,((e.clientX-rect.left)/rect.width)*100)); const y=Math.max(0,Math.min(100,((e.clientY-rect.top)/rect.height)*100)); await db.ref('assistanceManagement/plots/'+dragging.id).update({x:+x.toFixed(3),y:+y.toFixed(3),updatedAt:firebase.database.ServerValue.TIMESTAMP}); dragging.el.style.cursor='grab'; dragging.el.removeEventListener('pointermove',dragMove); dragging=null; }
+
+  function focusPlot(requestId){ const found=Object.entries(plots).find(([id,p])=>p.requestId===requestId); if(!found)return; const el=document.querySelector(`.plot[data-id="${found[0]}"]`); if(el){el.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.35)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:700}); el.scrollIntoView({behavior:'smooth',block:'center'});} }
+
+  async function uploadMap(ev){ const file=ev.target.files[0]; if(!file)return; if(file.size>1.7*1024*1024){alert('Para esta versión usa un mapa de menos de 1,7 MB. Después lo pasaremos a Firebase Storage.');ev.target.value='';return;} const reader=new FileReader(); reader.onload=async()=>{await db.ref('assistanceManagement/map').set({name:file.name,dataUrl:reader.result,updatedAt:firebase.database.ServerValue.TIMESTAMP});}; reader.readAsDataURL(file); }
+  async function removeMap(){ if(!confirm('¿Quitar el mapa? Las parcelas conservarán sus posiciones porcentuales.'))return; await db.ref('assistanceManagement/map').remove(); }
+  async function deleteRequest(id){ if(!confirm('¿Eliminar esta solicitud?'))return; const found=Object.entries(plots).find(([pid,p])=>p.requestId===id); const updates={}; updates['assistanceRequests/'+id]=null; if(found)updates['assistanceManagement/plots/'+found[0]]=null; await db.ref().update(updates); }
+</script>
+</body>
+</html>

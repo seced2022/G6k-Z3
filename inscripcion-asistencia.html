@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#050608">
+  <title>Parcelas de Asistencia · G6k-Z3</title>
+  <style>
+    :root{--bg:#050608;--panel:#10151d;--panel2:#0a0e14;--text:#f5f7fb;--muted:#9fa7b2;--accent:#ff7a00;--green:#2bd27f;--red:#ff646c;--line:rgba(255,255,255,.09);--shadow:0 20px 60px rgba(0,0,0,.48)}
+    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+    html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 88% 0%,rgba(255,122,0,.13),transparent 25%),linear-gradient(180deg,#080a0e,#050608 60%)}
+    .app{width:min(760px,100%);margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px calc(env(safe-area-inset-bottom,0px) + 28px)}
+    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+    .brand{display:flex;align-items:center;gap:11px} .logo{width:48px;height:48px;border-radius:14px;background:var(--accent);color:#111;display:grid;place-items:center;font-weight:1000} .brand strong{letter-spacing:.05em} .brand small{display:block;color:var(--muted);margin-top:2px}
+    .badge{border:1px solid rgba(255,122,0,.28);background:rgba(255,122,0,.08);color:#ffbd7e;padding:7px 10px;border-radius:999px;font-size:.72rem;font-weight:900}
+    .hero{padding:18px 0 20px;border-bottom:1px solid var(--line);margin-bottom:16px} .eyebrow{font-size:.72rem;color:var(--accent);letter-spacing:.18em;font-weight:950} h1{margin:7px 0 7px;font-size:clamp(2rem,7vw,3.6rem);letter-spacing:-.045em} .hero p{margin:0;color:var(--muted);line-height:1.5}
+    .card{background:linear-gradient(180deg,rgba(18,24,33,.98),rgba(9,13,18,.98));border:1px solid var(--line);border-radius:21px;padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+    .section-title{margin:0 0 4px;font-size:1.05rem} .section-sub{margin:0 0 14px;color:var(--muted);font-size:.84rem;line-height:1.4}
+    .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px} .full{grid-column:1/-1}
+    label{display:flex;flex-direction:column;gap:6px;color:#dce2e9;font-size:.84rem;font-weight:700}
+    input,select,textarea{width:100%;background:#080c11;border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:12px;padding:12px 13px;outline:none;font:inherit} input:focus,select:focus,textarea:focus{border-color:var(--accent)} textarea{resize:vertical}
+    .toggle-line{display:flex;flex-direction:row;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:13px;background:#090d12} .toggle-line input{width:auto}
+    .submit{width:100%;border:0;border-radius:14px;padding:14px 16px;background:var(--accent);color:#111;font-weight:1000;font-size:1rem;cursor:pointer}
+    .note{padding:12px 13px;border-radius:14px;border:1px solid rgba(255,122,0,.22);background:rgba(255,122,0,.07);color:#ffc289;font-size:.82rem;line-height:1.45;margin-bottom:14px}
+    .success{display:none;text-align:center;padding:28px 18px} .success.show{display:block} .check{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;background:rgba(43,210,127,.12);border:1px solid rgba(43,210,127,.28);font-size:2rem;color:#83efb3} .success h2{margin:0 0 8px} .success p{color:var(--muted);line-height:1.5}
+    .error{color:#ff999f;font-size:.82rem;min-height:20px;margin-top:10px}
+    .footer{text-align:center;color:#737d88;font-size:.75rem;letter-spacing:.08em;margin-top:22px}
+    @media(max-width:620px){.grid{grid-template-columns:1fr} .full{grid-column:auto} .badge{display:none}}
+  </style>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+</head>
+<body>
+<main class="app">
+  <div class="top">
+    <div class="brand"><div class="logo">G6K</div><div><strong>G6k-Z3</strong><small>Gestión integral del rally</small></div></div>
+    <div class="badge">PARCELAS DE ASISTENCIA</div>
+  </div>
+
+  <section class="hero">
+    <div class="eyebrow">INSCRIPCIÓN</div>
+    <h1>Tu asistencia</h1>
+    <p>Indica cómo será tu asistencia. Organización utilizará estos datos para preparar el mapa y asignarte una parcela.</p>
+  </section>
+
+  <div id="formWrap">
+    <div class="note">Esta solicitud <strong>no asigna automáticamente una parcela</strong>. Cuando Organización la distribuya en el mapa, quedará registrada en el panel oficial.</div>
+
+    <form id="form" class="card" onsubmit="sendRequest(event)">
+      <h2 class="section-title">Participante</h2>
+      <p class="section-sub">Datos para localizar tu inscripción rápidamente.</p>
+      <div class="grid">
+        <label>Dorsal *<input id="dorsal" inputmode="numeric" maxlength="5" required placeholder="Ej. 24"></label>
+        <label>Nombre del piloto *<input id="piloto" required maxlength="100" placeholder="Nombre y apellidos"></label>
+        <label>Copiloto<input id="copiloto" maxlength="100" placeholder="Nombre y apellidos"></label>
+        <label>Escudería / equipo<input id="equipo" maxlength="120" placeholder="Nombre del equipo"></label>
+        <label>Teléfono de contacto *<input id="telefono" required maxlength="30" inputmode="tel" placeholder="600 000 000"></label>
+        <label>Email<input id="email" type="email" maxlength="120" placeholder="correo@ejemplo.com"></label>
+      </div>
+
+      <div style="height:22px"></div>
+      <h2 class="section-title">Asistencia que llevas</h2>
+      <p class="section-sub">Esto ayudará a Organización a calcular y repartir el espacio.</p>
+      <div class="grid">
+        <label>Tipo principal de asistencia *
+          <select id="tipo" required>
+            <option value="">Seleccionar…</option>
+            <option>Furgoneta</option>
+            <option>Furgoneta + remolque</option>
+            <option>Camión</option>
+            <option>Camión + remolque</option>
+            <option>Turismo + remolque</option>
+            <option>Motorhome</option>
+            <option>Carpa / estructura</option>
+            <option>Otro</option>
+          </select>
+        </label>
+        <label>Nº de vehículos / elementos<input id="cantidad" type="number" min="1" max="12" value="1"></label>
+        <label class="full">Descripción adicional<input id="detalle" maxlength="180" placeholder="Ej. Furgoneta larga + remolque con coche + carpa 6x3"></label>
+      </div>
+
+      <div style="height:22px"></div>
+      <h2 class="section-title">Asistencia compartida</h2>
+      <p class="section-sub">Si compartís asistencia, indícanos con qué piloto para intentar manteneros en la misma parcela.</p>
+      <label class="toggle-line full"><input id="comparte" type="checkbox" onchange="toggleShared()"> Sí, comparto asistencia con otro participante</label>
+      <div id="sharedFields" class="grid" style="display:none;margin-top:12px">
+        <label class="full">Nombre del piloto con el que compartes *<input id="compartePiloto" maxlength="100" placeholder="Nombre y apellidos"></label>
+        <label>Dorsal del otro piloto, si lo sabes<input id="comparteDorsal" inputmode="numeric" maxlength="5" placeholder="Ej. 31"></label>
+      </div>
+
+      <div style="height:22px"></div>
+      <label>Observaciones<textarea id="observaciones" rows="4" maxlength="500" placeholder="Cualquier dato que Organización deba tener en cuenta…"></textarea></label>
+      <div id="error" class="error"></div>
+      <button id="submitBtn" class="submit" type="submit">ENVIAR SOLICITUD</button>
+    </form>
+  </div>
+
+  <section id="success" class="card success">
+    <div class="check">✓</div>
+    <h2>Solicitud enviada</h2>
+    <p id="successText">Organización ya tiene tus datos para preparar la parcela de asistencia.</p>
+    <button class="submit" onclick="newRequest()">Enviar otra solicitud</button>
+  </section>
+
+  <div class="footer">G6K® 2026 · G6k-Z3</div>
+</main>
+<script>
+  const firebaseConfig={
+      apiKey: "AIzaSyD_vcPOimDMu4hLxe6mb0B0hZ85ZJwSYTA",
+      authDomain: "g6k-z3.firebaseapp.com",
+      databaseURL: "https://g6k-z3-default-rtdb.europe-west1.firebasedatabase.app/",
+      projectId: "g6k-z3",
+      storageBucket: "g6k-z3.firebasestorage.app",
+      messagingSenderId: "1007699316093",
+      appId: "1:1007699316093:web:1d00b1f102fd43acb91014"
+    };
+  firebase.initializeApp(firebaseConfig);
+  const db=firebase.database();
+
+  const $=id=>document.getElementById(id);
+  function toggleShared(){
+    const on=$('comparte').checked;
+    $('sharedFields').style.display=on?'grid':'none';
+    $('compartePiloto').required=on;
+    if(!on){ $('compartePiloto').value=''; $('comparteDorsal').value=''; }
+  }
+
+  function clean(v,max=500){ return String(v||'').trim().slice(0,max); }
+
+  async function sendRequest(ev){
+    ev.preventDefault();
+    $('error').textContent='';
+    const btn=$('submitBtn');
+    if($('comparte').checked && !clean($('compartePiloto').value,100)){
+      $('error').textContent='Indica el nombre del piloto con el que compartes asistencia.';
+      return;
+    }
+
+    const payload={
+      dorsal:clean($('dorsal').value,5),
+      piloto:clean($('piloto').value,100),
+      copiloto:clean($('copiloto').value,100),
+      equipo:clean($('equipo').value,120),
+      telefono:clean($('telefono').value,30),
+      email:clean($('email').value,120),
+      tipo:clean($('tipo').value,80),
+      cantidad:Math.max(1,Math.min(12,Number($('cantidad').value)||1)),
+      detalle:clean($('detalle').value,180),
+      comparte:!!$('comparte').checked,
+      compartePiloto:$('comparte').checked?clean($('compartePiloto').value,100):'',
+      comparteDorsal:$('comparte').checked?clean($('comparteDorsal').value,5):'',
+      observaciones:clean($('observaciones').value,500),
+      status:'pendiente',
+      parcela:'',
+      createdAt:firebase.database.ServerValue.TIMESTAMP
+    };
+
+    if(!payload.dorsal || !payload.piloto || !payload.telefono || !payload.tipo){
+      $('error').textContent='Revisa los campos obligatorios.';
+      return;
+    }
+
+    btn.disabled=true; btn.textContent='ENVIANDO…';
+    try{
+      const ref=db.ref('assistanceRequests').push();
+      await ref.set(payload);
+      $('formWrap').style.display='none';
+      $('success').classList.add('show');
+      $('successText').textContent=`Solicitud del dorsal ${payload.dorsal} enviada. Organización ya puede verla en su panel.`;
+    }catch(err){
+      console.error(err);
+      $('error').textContent='No se pudo enviar. Revisa la conexión o las reglas de Firebase.';
+    }finally{ btn.disabled=false; btn.textContent='ENVIAR SOLICITUD'; }
+  }
+
+  function newRequest(){
+    $('form').reset(); toggleShared();
+    $('success').classList.remove('show');
+    $('formWrap').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+</script>
+</body>
+</html>

@@ -1,131 +1,603 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#050608">
-  <title>Parcelas · Oficial · G6k-Z3</title>
-  <style>
-    :root{--bg:#050608;--panel:#10151d;--panel2:#080c11;--text:#f5f7fb;--muted:#9fa7b2;--accent:#ff7a00;--green:#2bd27f;--red:#ff5f67;--blue:#5ca9ff;--line:rgba(255,255,255,.09);--shadow:0 20px 60px rgba(0,0,0,.48)}
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent} html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)} body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 90% 0%,rgba(255,122,0,.12),transparent 25%),linear-gradient(180deg,#080a0e,#050608 60%)}
-    button,input,select,textarea{font:inherit} button{cursor:pointer} .hidden{display:none!important}
-    .auth{position:fixed;inset:0;z-index:99;display:grid;place-items:center;padding:18px;background:#050608} .auth-card{width:min(430px,100%);padding:22px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,#171d26,#0b0f15);box-shadow:var(--shadow)} .logo{width:60px;height:60px;border-radius:17px;display:grid;place-items:center;background:var(--accent);color:#111;font-weight:1000;margin-bottom:16px} .auth-card h1{margin:0 0 5px} .auth-card p{color:var(--muted);line-height:1.45} .auth-card input{margin-bottom:10px}
-    input,select,textarea{width:100%;background:#080c11;border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:12px;padding:11px 12px;outline:none} input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-    .app{width:min(1500px,100%);margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 24px)}
-    .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px;flex-wrap:wrap} .brand{display:flex;align-items:center;gap:10px} .brand .logo{width:46px;height:46px;margin:0;border-radius:13px} .brand strong{letter-spacing:.05em} .brand small{display:block;color:var(--muted)} .actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .btn{border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#0d1219;color:var(--text);padding:10px 12px;font-weight:850} .btn.primary{background:var(--accent);color:#111;border-color:transparent} .btn.danger{color:#ff9a9f;border-color:rgba(255,95,103,.28);background:rgba(255,95,103,.08)} .btn.small{padding:7px 9px;font-size:.78rem}
-    .hero{padding:14px 0 17px;border-bottom:1px solid var(--line);margin-bottom:12px} .eyebrow{color:var(--accent);font-weight:950;font-size:.72rem;letter-spacing:.18em} h1{margin:5px 0 5px;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.045em} .hero p{margin:0;color:var(--muted)}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:12px} .stat{background:linear-gradient(180deg,#121821,#0a0e13);border:1px solid var(--line);border-radius:16px;padding:13px} .stat strong{display:block;font-size:1.5rem} .stat span{color:var(--muted);font-size:.77rem}
-    .layout{display:grid;grid-template-columns:minmax(380px,520px) 1fr;gap:12px;align-items:start} .card{background:linear-gradient(180deg,rgba(18,24,33,.98),rgba(9,13,18,.98));border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:var(--shadow)}
-    .toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap} .toolbar input{flex:1 1 220px} .toolbar select{width:auto;min-width:155px}
-    .list{display:grid;gap:9px;max-height:68svh;overflow:auto;padding-right:2px} .request{border:1px solid var(--line);border-radius:15px;padding:12px;background:#090d12} .request.assigned{border-color:rgba(43,210,127,.24)} .request-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start} .dorsal{min-width:54px;height:54px;border-radius:13px;background:var(--accent);color:#111;display:grid;place-items:center;font-weight:1000;font-size:1.35rem} .r-main{flex:1} .r-main strong{display:block;font-size:1rem} .r-main small{color:var(--muted)} .pill{display:inline-block;border-radius:999px;padding:5px 8px;font-size:.67rem;font-weight:900} .pending{background:rgba(255,122,0,.10);color:#ffbd7e} .assignedP{background:rgba(43,210,127,.10);color:#85efb4} .meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;color:#cbd2da;font-size:.78rem} .share{margin-top:8px;padding:8px;border-radius:10px;background:rgba(92,169,255,.07);border:1px solid rgba(92,169,255,.18);color:#acd4ff;font-size:.78rem} .request-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
-    .map-card{padding:0;overflow:hidden} .map-head{padding:13px 14px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap} .map-head h2{font-size:1rem;margin:0} .map-head p{margin:3px 0 0;color:var(--muted);font-size:.77rem} .map-tools{display:flex;gap:7px;align-items:center;flex-wrap:wrap} .map-wrap{position:relative;min-height:610px;background:#06080b;overflow:hidden;touch-action:none} .map-wrap.no-map::before{content:'SUBE EL MAPA DE ASISTENCIA';position:absolute;inset:0;display:grid;place-items:center;color:#555f69;font-weight:950;letter-spacing:.12em} #mapImage{display:block;width:100%;height:auto;min-height:610px;object-fit:contain;background:#070a0e} .plot{position:absolute;transform:translate(-50%,-50%);min-width:52px;height:38px;padding:0 9px;border-radius:10px;display:grid;place-items:center;background:rgba(255,122,0,.94);color:#111;font-weight:1000;border:2px solid rgba(255,255,255,.76);box-shadow:0 6px 22px rgba(0,0,0,.45);cursor:grab;user-select:none} .plot.shared{background:rgba(92,169,255,.94)} .plot .miniD{font-size:.64rem;line-height:1;margin-top:-4px} .placement-banner{display:none;padding:10px 12px;background:rgba(255,122,0,.12);border-bottom:1px solid rgba(255,122,0,.25);color:#ffc78f;font-weight:850;font-size:.82rem} .placement-banner.show{display:block}
-    .modal{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.72);display:none;place-items:center;padding:16px} .modal.show{display:grid} .modal-card{width:min(480px,100%);max-height:90svh;overflow:auto;background:linear-gradient(180deg,#171d26,#0b0f15);border:1px solid var(--line);border-radius:20px;padding:17px} .modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px} .modal-head h3{margin:0} label{display:flex;flex-direction:column;gap:6px;color:#dde3ea;font-size:.82rem;font-weight:700;margin-bottom:10px} .muted{color:var(--muted)} .error{color:#ff999f;font-size:.8rem;min-height:20px}
-    @media(max-width:980px){.layout{grid-template-columns:1fr} .list{max-height:none} .map-wrap,#mapImage{min-height:500px}} @media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)} .meta{grid-template-columns:1fr} .map-wrap,#mapImage{min-height:420px}}
-  </style>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050608">
+<title>Parcelas · Oficial · G6k-Z3</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css">
+
+<style>
+:root{
+  --bg:#050608;--panel:#10151d;--panel2:#080c11;--text:#f5f7fb;--muted:#9fa7b2;
+  --accent:#ff7a00;--green:#2bd27f;--red:#ff5f67;--blue:#5ca9ff;
+  --line:rgba(255,255,255,.09);--shadow:0 20px 60px rgba(0,0,0,.48)
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at 90% 0%,rgba(255,122,0,.12),transparent 25%),linear-gradient(180deg,#080a0e,#050608 60%)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:none!important}
+input,select,textarea{width:100%;background:#080c11;border:1px solid rgba(255,255,255,.12);color:var(--text);border-radius:12px;padding:11px 12px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+.auth{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:18px;background:#050608}
+.auth-card{width:min(430px,100%);padding:22px;border:1px solid var(--line);border-radius:24px;background:linear-gradient(180deg,#171d26,#0b0f15);box-shadow:var(--shadow)}
+.logo{width:60px;height:60px;border-radius:17px;display:grid;place-items:center;background:var(--accent);color:#111;font-weight:1000;margin-bottom:16px}
+.auth-card h1{margin:0 0 5px}.auth-card p{color:var(--muted);line-height:1.45}.auth-card input{margin-bottom:10px}
+.app{width:min(1600px,100%);margin:0 auto;padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 24px)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px}.brand .logo{width:46px;height:46px;margin:0;border-radius:13px}.brand strong{letter-spacing:.05em}.brand small{display:block;color:var(--muted)}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#0d1219;color:var(--text);padding:10px 12px;font-weight:850}
+.btn.primary{background:var(--accent);color:#111;border-color:transparent}.btn.danger{color:#ff9a9f;border-color:rgba(255,95,103,.28);background:rgba(255,95,103,.08)}.btn.small{padding:7px 9px;font-size:.78rem}
+.hero{padding:14px 0 17px;border-bottom:1px solid var(--line);margin-bottom:12px}.eyebrow{color:var(--accent);font-weight:950;font-size:.72rem;letter-spacing:.18em}
+h1{margin:5px 0 5px;font-size:clamp(2rem,4vw,3.4rem);letter-spacing:-.045em}.hero p{margin:0;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:12px}.stat{background:linear-gradient(180deg,#121821,#0a0e13);border:1px solid var(--line);border-radius:16px;padding:13px}.stat strong{display:block;font-size:1.5rem}.stat span{color:var(--muted);font-size:.77rem}
+.layout{display:grid;grid-template-columns:minmax(370px,500px) 1fr;gap:12px;align-items:start}
+.card{background:linear-gradient(180deg,rgba(18,24,33,.98),rgba(9,13,18,.98));border:1px solid var(--line);border-radius:19px;padding:14px;box-shadow:var(--shadow)}
+.toolbar{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}.toolbar input{flex:1 1 210px}.toolbar select{width:auto;min-width:145px}
+.list{display:grid;gap:9px;max-height:72svh;overflow:auto;padding-right:2px}
+.request{border:1px solid var(--line);border-radius:15px;padding:12px;background:#090d12}.request.assigned{border-color:rgba(43,210,127,.24)}
+.request-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.dorsal{min-width:54px;height:54px;border-radius:13px;background:var(--accent);color:#111;display:grid;place-items:center;font-weight:1000;font-size:1.22rem}
+.r-main{flex:1}.r-main strong{display:block;font-size:1rem}.r-main small{color:var(--muted)}
+.pill{display:inline-block;border-radius:999px;padding:5px 8px;font-size:.67rem;font-weight:900}.pending{background:rgba(255,122,0,.10);color:#ffbd7e}.assignedP{background:rgba(43,210,127,.10);color:#85efb4}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:10px;color:#cbd2da;font-size:.78rem}
+.share{margin-top:8px;padding:8px;border-radius:10px;background:rgba(92,169,255,.07);border:1px solid rgba(92,169,255,.18);color:#acd4ff;font-size:.78rem}
+.request-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.map-card{padding:0;overflow:hidden}.map-head{padding:12px 13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.map-head h2{font-size:1rem;margin:0}.map-head p{margin:3px 0 0;color:var(--muted);font-size:.77rem}.map-tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#map{height:720px;background:#111}
+.map-help{padding:9px 12px;background:rgba(255,122,0,.08);border-bottom:1px solid rgba(255,122,0,.18);color:#ffc38a;font-size:.79rem}
+.leaflet-container{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+.leaflet-control-layers,.leaflet-bar a{background:#111820!important;color:#fff!important;border-color:#313842!important}
+.leaflet-control-layers label{color:#e8edf3}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#10161e;color:#fff}
+.parcel-label{background:transparent;border:0}.parcel-chip{min-width:58px;text-align:center;padding:5px 8px;border-radius:9px;background:rgba(6,8,11,.9);border:2px solid #ff7a00;color:#fff;font-weight:1000;box-shadow:0 4px 15px rgba(0,0,0,.45);white-space:nowrap}
+.parcel-chip.assigned{border-color:#2bd27f}.parcel-chip.shared{border-color:#5ca9ff}.parcel-chip small{display:block;font-size:.63rem;color:#ccd3dc;margin-top:1px}
+.modal{position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.72);display:none;place-items:center;padding:16px}.modal.show{display:grid}
+.modal-card{width:min(540px,100%);max-height:90svh;overflow:auto;background:linear-gradient(180deg,#171d26,#0b0f15);border:1px solid var(--line);border-radius:20px;padding:17px}
+.modal-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}.modal-head h3{margin:0}
+label{display:flex;flex-direction:column;gap:6px;color:#dde3ea;font-size:.82rem;font-weight:700;margin-bottom:10px}.muted{color:var(--muted)}.error{color:#ff999f;font-size:.8rem;min-height:20px}
+.assign-list{display:grid;gap:7px;max-height:300px;overflow:auto}.assign-option{display:flex;align-items:center;gap:10px;padding:9px;border:1px solid var(--line);border-radius:11px;background:#090d12}.assign-option input{width:auto}
+.ref-img{width:100%;display:block;border-radius:12px;border:1px solid var(--line)}
+.map-coord{display:flex;gap:6px;align-items:center}.map-coord input{width:125px}
+@media(max-width:1080px){.layout{grid-template-columns:1fr}.list{max-height:none}#map{height:650px}}
+@media(max-width:650px){.stats{grid-template-columns:repeat(2,1fr)}.meta{grid-template-columns:1fr}#map{height:70svh}.map-coord{width:100%}.map-coord input{flex:1;width:auto}}
+</style>
+
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 </head>
 <body>
+
 <section id="auth" class="auth">
-  <div class="auth-card"><div class="logo">G6K</div><h1>Parcelas · OFICIAL</h1><p>Acceso protegido para gestionar solicitudes y distribuir las parcelas en el mapa de asistencia.</p><input id="email" type="email" placeholder="Correo ADMIN"><input id="password" type="password" placeholder="Contraseña"><button class="btn primary" style="width:100%" onclick="login()">Entrar</button><div id="authError" class="error"></div></div>
+  <div class="auth-card">
+    <div class="logo">G6K</div>
+    <h1>Parcelas · OFICIAL</h1>
+    <p>Acceso protegido para dibujar, distribuir y asignar parcelas sobre el mapa real.</p>
+    <input id="email" type="email" placeholder="Correo ADMIN">
+    <input id="password" type="password" placeholder="Contraseña">
+    <button class="btn primary" style="width:100%" onclick="login()">Entrar</button>
+    <div id="authError" class="error"></div>
+  </div>
 </section>
 
 <main id="app" class="app hidden">
-  <div class="top"><div class="brand"><div class="logo">G6K</div><div><strong>G6k-Z3 · PARCELAS</strong><small>Panel oficial de asistencia</small></div></div><div class="actions"><span id="syncState" class="muted" style="font-size:.78rem">Firebase</span><button class="btn small" onclick="location.href='admin.html'">ADMIN</button><button class="btn small danger" onclick="logout()">Salir</button></div></div>
-  <section class="hero"><div class="eyebrow">ORGANIZACIÓN</div><h1>Mapa de asistencia</h1><p>Recibe las solicitudes de los inscritos, coloca las parcelas sobre el plano y asígnalas.</p></section>
+  <div class="top">
+    <div class="brand"><div class="logo">G6K</div><div><strong>G6k-Z3 · PARCELAS</strong><small>Panel oficial · mapa real</small></div></div>
+    <div class="actions">
+      <span id="syncState" class="muted" style="font-size:.78rem">Firebase</span>
+      <button class="btn small" onclick="openReference()">Plano año anterior</button>
+      <button class="btn small" onclick="location.href='parcelas-consulta.html'">Vista pública</button>
+      <button class="btn small danger" onclick="logout()">Salir</button>
+    </div>
+  </div>
 
-  <div class="stats"><div class="stat"><strong id="stTotal">0</strong><span>Solicitudes</span></div><div class="stat"><strong id="stPending">0</strong><span>Pendientes</span></div><div class="stat"><strong id="stAssigned">0</strong><span>Asignadas</span></div><div class="stat"><strong id="stShared">0</strong><span>Compartidas</span></div></div>
+  <section class="hero">
+    <div class="eyebrow">ORGANIZACIÓN</div>
+    <h1>Mapa real de asistencia</h1>
+    <p>Dibuja las parcelas sobre el terreno, asígnalas a los inscritos y añade los dorsales cuando Federación los publique.</p>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><strong id="stTotal">0</strong><span>Solicitudes</span></div>
+    <div class="stat"><strong id="stPending">0</strong><span>Pendientes</span></div>
+    <div class="stat"><strong id="stAssigned">0</strong><span>Asignadas</span></div>
+    <div class="stat"><strong id="stShared">0</strong><span>Compartidas</span></div>
+    <div class="stat"><strong id="stParcels">0</strong><span>Parcelas dibujadas</span></div>
+  </div>
 
   <div class="layout">
     <section class="card">
-      <div class="toolbar"><input id="search" placeholder="Buscar piloto, dorsal o equipo…" oninput="renderRequests()"><select id="filter" onchange="renderRequests()"><option value="all">Todas</option><option value="pendiente">Pendientes</option><option value="asignada">Asignadas</option><option value="compartida">Compartidas</option></select></div>
+      <div class="toolbar">
+        <input id="search" placeholder="Buscar piloto, dorsal o equipo…" oninput="renderRequests()">
+        <select id="filter" onchange="renderRequests()">
+          <option value="all">Todas</option>
+          <option value="pendiente">Pendientes</option>
+          <option value="asignada">Asignadas</option>
+          <option value="compartida">Compartidas</option>
+        </select>
+      </div>
       <div id="requests" class="list"></div>
     </section>
 
     <section class="card map-card">
-      <div class="map-head"><div><h2>Plano de parcelas</h2><p>Sube el mapa y coloca cada parcela. Puedes arrastrarlas después.</p></div><div class="map-tools"><input id="mapFile" type="file" accept="image/*" style="display:none" onchange="uploadMap(event)"><button class="btn small" onclick="$('mapFile').click()">Subir mapa</button><button class="btn small danger" onclick="removeMap()">Quitar mapa</button></div></div>
-      <div id="placementBanner" class="placement-banner">Haz clic en el mapa para colocar la parcela.</div>
-      <div id="mapWrap" class="map-wrap no-map" onclick="placeOnMap(event)"><img id="mapImage" alt="Mapa de asistencia"><div id="plotsLayer"></div></div>
+      <div class="map-head">
+        <div>
+          <h2>Editor geográfico</h2>
+          <p>Usa el rectángulo o polígono del mapa para crear parcelas.</p>
+        </div>
+        <div class="map-tools">
+          <button class="btn small" onclick="locateMe()">Mi ubicación</button>
+          <div class="map-coord">
+            <input id="latInput" inputmode="decimal" placeholder="Latitud">
+            <input id="lngInput" inputmode="decimal" placeholder="Longitud">
+            <button class="btn small" onclick="goCoords()">Ir</button>
+          </div>
+          <button class="btn small primary" onclick="saveMapView()">Guardar vista</button>
+        </div>
+      </div>
+      <div class="map-help">Dibuja primero todas las parcelas. Después usa <strong>Asignar parcela</strong> desde cada solicitud. Puedes editar o borrar polígonos con las herramientas del mapa.</div>
+      <div id="map"></div>
     </section>
   </div>
 </main>
 
+<div id="parcelModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head"><h3 id="parcelModalTitle">Parcela</h3><button class="btn small" onclick="closeParcelModal()">Cerrar</button></div>
+    <input id="parcelKey" type="hidden">
+    <label>Nombre / número de parcela<input id="parcelLabel" placeholder="Ej. P01"></label>
+    <div class="muted" style="font-size:.8rem;margin-bottom:10px">Inscritos actualmente asignados:</div>
+    <div id="parcelAssigned" class="assign-list"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px">
+      <button class="btn danger" onclick="deleteParcelFromModal()">Eliminar parcela</button>
+      <button class="btn primary" onclick="saveParcelInfo()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <div id="assignModal" class="modal">
-  <div class="modal-card"><div class="modal-head"><h3>Asignar parcela</h3><button class="btn small" onclick="closeAssign()">Cerrar</button></div><div id="assignWho" class="muted" style="margin-bottom:12px"></div><label>Nº / nombre de parcela<input id="parcelLabel" placeholder="Ej. P01"></label><label>Notas de ubicación<input id="parcelNotes" placeholder="Ej. Junto a salida / lado izquierdo"></label><div class="error" id="assignError"></div><button class="btn primary" style="width:100%" onclick="startPlacement()">Colocar en el mapa</button></div>
+  <div class="modal-card">
+    <div class="modal-head"><h3>Asignar parcela</h3><button class="btn small" onclick="closeAssignModal()">Cerrar</button></div>
+    <div id="assignWho" class="muted" style="margin-bottom:12px"></div>
+    <label>Parcela<select id="assignParcelSelect"></select></label>
+    <div class="muted" style="font-size:.78rem;margin-bottom:10px">Una misma parcela puede contener varios participantes si comparten asistencia.</div>
+    <div id="assignError" class="error"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn primary" onclick="confirmAssignment()">Asignar</button></div>
+  </div>
+</div>
+
+<div id="editRequestModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head"><h3>Editar inscripción</h3><button class="btn small" onclick="closeEditRequest()">Cerrar</button></div>
+    <input id="editRequestId" type="hidden">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <label>Dorsal<input id="editDorsal" maxlength="5" placeholder="Opcional"></label>
+      <label>Piloto<input id="editPiloto" maxlength="100"></label>
+      <label>Copiloto<input id="editCopiloto" maxlength="100"></label>
+      <label>Equipo<input id="editEquipo" maxlength="120"></label>
+    </div>
+    <label>Observaciones<textarea id="editObservaciones" rows="3" maxlength="500"></textarea></label>
+    <div style="display:flex;gap:8px;justify-content:flex-end"><button class="btn primary" onclick="saveRequestEdit()">Guardar cambios</button></div>
+  </div>
+</div>
+
+<div id="referenceModal" class="modal">
+  <div class="modal-card" style="width:min(1000px,100%)">
+    <div class="modal-head"><h3>Plano de referencia · año anterior</h3><button class="btn small" onclick="$('referenceModal').classList.remove('show')">Cerrar</button></div>
+    <img class="ref-img" src="plano-referencia-2025.jpg" alt="Plano de referencia del parque de asistencias">
+  </div>
 </div>
 
 <script>
-  const firebaseConfig={
-      apiKey: "AIzaSyD_vcPOimDMu4hLxe6mb0B0hZ85ZJwSYTA",
-      authDomain: "g6k-z3.firebaseapp.com",
-      databaseURL: "https://g6k-z3-default-rtdb.europe-west1.firebasedatabase.app/",
-      projectId: "g6k-z3",
-      storageBucket: "g6k-z3.firebasestorage.app",
-      messagingSenderId: "1007699316093",
-      appId: "1:1007699316093:web:1d00b1f102fd43acb91014"
-    };
-  firebase.initializeApp(firebaseConfig);
-  const auth=firebase.auth(); const db=firebase.database(); const ADMIN_UID='vAU0N9YTYiR4c8rIY95kIpPFPmY2'; const $=id=>document.getElementById(id);
-  let requests={}, plots={}, mapData=null, pendingAssignment=null, dragging=null;
 
-  function login(){ $('authError').textContent=''; auth.signInWithEmailAndPassword($('email').value.trim(),$('password').value).catch(e=>{ console.error(e); $('authError').textContent='No se pudo iniciar sesión.'; }); }
-  function logout(){ auth.signOut(); }
-  auth.onAuthStateChanged(user=>{
-    if(user && user.uid===ADMIN_UID){ $('auth').style.display='none'; $('app').classList.remove('hidden'); subscribe(); }
-    else{ $('app').classList.add('hidden'); $('auth').style.display='grid'; if(user){ $('authError').textContent='Esta cuenta no está autorizada.'; auth.signOut(); } }
+const firebaseConfig={
+  apiKey:"AIzaSyD_vcPOimDMu4hLxe6mb0B0hZ85ZJwSYTA",
+  authDomain:"g6k-z3.firebaseapp.com",
+  databaseURL:"https://g6k-z3-default-rtdb.europe-west1.firebasedatabase.app/",
+  projectId:"g6k-z3",
+  storageBucket:"g6k-z3.firebasestorage.app",
+  messagingSenderId:"1007699316093",
+  appId:"1:1007699316093:web:1d00b1f102fd43acb91014"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.database();
+const ADMIN_UID='vAU0N9YTYiR4c8rIY95kIpPFPmY2';
+const $=id=>document.getElementById(id);
+
+let requests={};
+let parcels={};
+let savedView=null;
+let map=null;
+let editableLayers=null;
+let labelsLayer=null;
+let layerByParcel={};
+let parcelByLayerId={};
+let selectedRequestId=null;
+let publicSyncTimer=null;
+
+function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+
+async function login(){
+  $('authError').textContent='';
+  try{await auth.signInWithEmailAndPassword($('email').value.trim(),$('password').value)}
+  catch(e){$('authError').textContent='No se pudo iniciar sesión.'}
+}
+function logout(){auth.signOut()}
+
+auth.onAuthStateChanged(async user=>{
+  if(!user){$('auth').style.display='grid';$('app').classList.add('hidden');return}
+  if(user.uid!==ADMIN_UID){$('authError').textContent='Cuenta sin permisos ADMIN.';await auth.signOut();return}
+  $('auth').style.display='none';$('app').classList.remove('hidden');
+  initMap();
+  bindFirebase();
+});
+
+function initMap(){
+  if(map)return;
+  map=L.map('map',{zoomControl:true}).setView([38.5,-4.5],6);
+
+  const osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    maxZoom:20,
+    attribution:'© OpenStreetMap'
   });
 
-  function subscribe(){
-    db.ref('assistanceRequests').on('value',s=>{requests=s.val()||{}; renderRequests(); renderStats();});
-    db.ref('assistanceManagement/plots').on('value',s=>{plots=s.val()||{}; renderPlots();});
-    db.ref('assistanceManagement/map').on('value',s=>{mapData=s.val()||null; renderMap();});
-  }
+  const satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{
+    maxZoom:20,
+    attribution:'Tiles © Esri'
+  });
 
-  function renderStats(){ const a=Object.values(requests); $('stTotal').textContent=a.length; $('stPending').textContent=a.filter(x=>x.status!=='asignada').length; $('stAssigned').textContent=a.filter(x=>x.status==='asignada').length; $('stShared').textContent=a.filter(x=>x.comparte).length; }
-  function esc(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  satellite.addTo(map);
+  L.control.layers({'Satélite':satellite,'Mapa':osm},null,{position:'topright'}).addTo(map);
 
-  function renderRequests(){
-    const q=$('search').value.trim().toLowerCase(); const f=$('filter').value;
-    const rows=Object.entries(requests).filter(([id,r])=>{
-      const hay=[r.dorsal,r.piloto,r.equipo,r.tipo,r.compartePiloto].join(' ').toLowerCase();
-      const mq=!q||hay.includes(q); let mf=true; if(f==='pendiente') mf=r.status!=='asignada'; if(f==='asignada') mf=r.status==='asignada'; if(f==='compartida') mf=!!r.comparte; return mq&&mf;
-    }).sort((a,b)=>{
-      const da=String(a[1].dorsal||'').trim();
-      const db=String(b[1].dorsal||'').trim();
-      if(da && db) return Number(da)-Number(db);
-      if(da) return -1;
-      if(db) return 1;
-      return String(a[1].piloto||'').localeCompare(String(b[1].piloto||''),'es');
+  editableLayers=new L.FeatureGroup().addTo(map);
+  labelsLayer=new L.LayerGroup().addTo(map);
+
+  const drawControl=new L.Control.Draw({
+    position:'topleft',
+    draw:{
+      polyline:false,circle:false,circlemarker:false,marker:false,
+      polygon:{allowIntersection:false,showArea:true,shapeOptions:{color:'#ff7a00',weight:3,fillOpacity:.22}},
+      rectangle:{shapeOptions:{color:'#ff7a00',weight:3,fillOpacity:.22}}
+    },
+    edit:{featureGroup:editableLayers,remove:true}
+  });
+  map.addControl(drawControl);
+
+  map.on(L.Draw.Event.CREATED, async e=>{
+    const label=prompt('Nombre de la parcela (ej. P01):','P'+String(Object.keys(parcels).length+1).padStart(2,'0'));
+    if(!label){return}
+    const key=db.ref('assistanceManagement/geoParcels').push().key;
+    const geometry=e.layer.toGeoJSON().geometry;
+    await db.ref('assistanceManagement/geoParcels/'+key).set({
+      label:String(label).trim(),
+      geometry,
+      requestIds:{},
+      createdAt:firebase.database.ServerValue.TIMESTAMP,
+      updatedAt:firebase.database.ServerValue.TIMESTAMP
     });
-    $('requests').innerHTML=rows.length?rows.map(([id,r])=>`<article class="request ${r.status==='asignada'?'assigned':''}"><div class="request-head"><div class="dorsal">${r.dorsal?esc(r.dorsal):'S/D'}</div><div class="r-main"><strong>${esc(r.piloto)}</strong><small>${esc(r.equipo||'Sin equipo')}</small></div><span class="pill ${r.status==='asignada'?'assignedP':'pending'}">${r.status==='asignada'?'PARCELA '+esc(r.parcela||''):'PENDIENTE'}</span></div><div class="meta"><span>🚚 ${esc(r.tipo)}${r.cantidad?` · ${r.cantidad} ud.`:''}</span><span>☎ ${esc(r.telefono||'-')}</span><span>${esc(r.detalle||'Sin detalle')}</span><span>${r.copiloto?'Copiloto: '+esc(r.copiloto):''}</span></div>${r.comparte?`<div class="share">🔗 Comparte con <strong>${esc(r.compartePiloto)}</strong>${r.comparteDorsal?' · dorsal '+esc(r.comparteDorsal):''}</div>`:''}${r.observaciones?`<div class="muted" style="font-size:.76rem;margin-top:8px">${esc(r.observaciones)}</div>`:''}<div class="request-actions"><button class="btn small primary" onclick="openAssign('${id}')">${r.status==='asignada'?'Mover / cambiar':'Asignar parcela'}</button>${r.status==='asignada'?`<button class="btn small" onclick="focusPlot('${id}')">Ver en mapa</button>`:''}<button class="btn small danger" onclick="deleteRequest('${id}')">Eliminar</button></div></article>`).join(''):'<div class="muted">No hay solicitudes con este filtro.</div>';
-  }
+  });
 
-  function openAssign(id){ const r=requests[id]; if(!r)return; pendingAssignment={requestId:id,label:r.parcela||'',notes:''}; $('assignWho').textContent=r.dorsal ? `Dorsal ${r.dorsal} · ${r.piloto}` : `Sin dorsal · ${r.piloto}`; $('parcelLabel').value=r.parcela||''; const existing=Object.values(plots).find(p=>p.requestId===id); $('parcelNotes').value=existing?.notes||''; $('assignError').textContent=''; $('assignModal').classList.add('show'); }
-  function closeAssign(){ $('assignModal').classList.remove('show'); if(pendingAssignment && pendingAssignment.placing) pendingAssignment=null; $('placementBanner').classList.remove('show'); }
-  function startPlacement(){ if(!mapData?.dataUrl){$('assignError').textContent='Primero sube el mapa de asistencia.';return;} const label=$('parcelLabel').value.trim(); if(!label){$('assignError').textContent='Indica el número o nombre de parcela.';return;} pendingAssignment.label=label; pendingAssignment.notes=$('parcelNotes').value.trim(); pendingAssignment.placing=true; $('assignModal').classList.remove('show'); $('placementBanner').textContent=`Colocando ${label} · haz clic en el mapa`; $('placementBanner').classList.add('show'); }
+  map.on(L.Draw.Event.EDITED, async e=>{
+    const promises=[];
+    e.layers.eachLayer(layer=>{
+      const key=parcelByLayerId[layer._leaflet_id];
+      if(key) promises.push(db.ref('assistanceManagement/geoParcels/'+key).update({
+        geometry:layer.toGeoJSON().geometry,
+        updatedAt:firebase.database.ServerValue.TIMESTAMP
+      }));
+    });
+    await Promise.all(promises);
+  });
 
-  async function placeOnMap(ev){
-    if(!pendingAssignment?.placing || ev.target.closest('.plot')) return;
-    const rect=$('mapWrap').getBoundingClientRect(); const x=((ev.clientX-rect.left)/rect.width)*100; const y=((ev.clientY-rect.top)/rect.height)*100;
-    const id='plot_'+pendingAssignment.requestId; const data={requestId:pendingAssignment.requestId,label:pendingAssignment.label,notes:pendingAssignment.notes,x:+x.toFixed(3),y:+y.toFixed(3),updatedAt:firebase.database.ServerValue.TIMESTAMP};
-    const old=Object.entries(plots).find(([pid,p])=>p.requestId===pendingAssignment.requestId);
-    const updates={}; if(old && old[0]!==id) updates['assistanceManagement/plots/'+old[0]]=null; updates['assistanceManagement/plots/'+id]=data; updates['assistanceRequests/'+pendingAssignment.requestId+'/status']='asignada'; updates['assistanceRequests/'+pendingAssignment.requestId+'/parcela']=pendingAssignment.label;
-    await db.ref().update(updates); pendingAssignment=null; $('placementBanner').classList.remove('show');
-  }
+  map.on(L.Draw.Event.DELETED, async e=>{
+    const keys=[];
+    e.layers.eachLayer(layer=>{
+      const key=parcelByLayerId[layer._leaflet_id];
+      if(key)keys.push(key);
+    });
+    for(const key of keys) await deleteParcel(key,false);
+  });
+}
 
-  function renderMap(){ const img=$('mapImage'), wrap=$('mapWrap'); if(mapData?.dataUrl){img.src=mapData.dataUrl; wrap.classList.remove('no-map');}else{img.removeAttribute('src');wrap.classList.add('no-map');} }
-  function renderPlots(){ const layer=$('plotsLayer'); layer.innerHTML=''; Object.entries(plots).forEach(([id,p])=>{ const r=requests[p.requestId]||{}; const el=document.createElement('div'); el.className='plot'+(r.comparte?' shared':''); el.style.left=p.x+'%'; el.style.top=p.y+'%'; el.dataset.id=id; el.title=(p.label||'')+' · '+(r.piloto||''); el.innerHTML=`<div>${esc(p.label)}</div><div class="miniD">${r.dorsal?'#'+esc(r.dorsal):''}</div>`; el.addEventListener('pointerdown',e=>beginDrag(e,id)); layer.appendChild(el); }); }
-  function beginDrag(e,id){ e.stopPropagation(); const el=e.currentTarget; el.setPointerCapture(e.pointerId); dragging={id,el,pointerId:e.pointerId}; el.style.cursor='grabbing'; el.addEventListener('pointermove',dragMove); el.addEventListener('pointerup',dragEnd,{once:true}); }
-  function dragMove(e){ if(!dragging)return; const rect=$('mapWrap').getBoundingClientRect(); const x=Math.max(0,Math.min(100,((e.clientX-rect.left)/rect.width)*100)); const y=Math.max(0,Math.min(100,((e.clientY-rect.top)/rect.height)*100)); dragging.el.style.left=x+'%'; dragging.el.style.top=y+'%'; }
-  async function dragEnd(e){ if(!dragging)return; const rect=$('mapWrap').getBoundingClientRect(); const x=Math.max(0,Math.min(100,((e.clientX-rect.left)/rect.width)*100)); const y=Math.max(0,Math.min(100,((e.clientY-rect.top)/rect.height)*100)); await db.ref('assistanceManagement/plots/'+dragging.id).update({x:+x.toFixed(3),y:+y.toFixed(3),updatedAt:firebase.database.ServerValue.TIMESTAMP}); dragging.el.style.cursor='grab'; dragging.el.removeEventListener('pointermove',dragMove); dragging=null; }
+function bindFirebase(){
+  db.ref('assistanceRequests').on('value',s=>{
+    requests=s.val()||{};
+    renderRequests();renderStats();renderParcels();queuePublicSync();
+    $('syncState').textContent='Firebase · solicitudes';
+  });
+  db.ref('assistanceManagement/geoParcels').on('value',s=>{
+    parcels=s.val()||{};
+    renderParcels();renderRequests();renderStats();queuePublicSync();
+    $('syncState').textContent='Firebase · parcelas';
+  });
+  db.ref('assistanceManagement/mapView').on('value',s=>{
+    savedView=s.val()||null;
+    if(savedView && map){
+      map.setView([savedView.lat,savedView.lng],savedView.zoom||18);
+      $('latInput').value=Number(savedView.lat).toFixed(6);
+      $('lngInput').value=Number(savedView.lng).toFixed(6);
+    }
+    queuePublicSync();
+  });
+}
 
-  function focusPlot(requestId){ const found=Object.entries(plots).find(([id,p])=>p.requestId===requestId); if(!found)return; const el=document.querySelector(`.plot[data-id="${found[0]}"]`); if(el){el.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.35)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:700}); el.scrollIntoView({behavior:'smooth',block:'center'});} }
+function renderStats(){
+  const a=Object.values(requests);
+  $('stTotal').textContent=a.length;
+  $('stPending').textContent=a.filter(x=>x.status!=='asignada').length;
+  $('stAssigned').textContent=a.filter(x=>x.status==='asignada').length;
+  $('stShared').textContent=a.filter(x=>x.comparte).length;
+  $('stParcels').textContent=Object.keys(parcels).length;
+}
 
-  async function uploadMap(ev){ const file=ev.target.files[0]; if(!file)return; if(file.size>1.7*1024*1024){alert('Para esta versión usa un mapa de menos de 1,7 MB. Después lo pasaremos a Firebase Storage.');ev.target.value='';return;} const reader=new FileReader(); reader.onload=async()=>{await db.ref('assistanceManagement/map').set({name:file.name,dataUrl:reader.result,updatedAt:firebase.database.ServerValue.TIMESTAMP});}; reader.readAsDataURL(file); }
-  async function removeMap(){ if(!confirm('¿Quitar el mapa? Las parcelas conservarán sus posiciones porcentuales.'))return; await db.ref('assistanceManagement/map').remove(); }
-  async function deleteRequest(id){ if(!confirm('¿Eliminar esta solicitud?'))return; const found=Object.entries(plots).find(([pid,p])=>p.requestId===id); const updates={}; updates['assistanceRequests/'+id]=null; if(found)updates['assistanceManagement/plots/'+found[0]]=null; await db.ref().update(updates); }
+function requestParcelKey(requestId){
+  return Object.keys(parcels).find(k=>parcels[k]?.requestIds?.[requestId]);
+}
+
+function renderRequests(){
+  if(!$('requests'))return;
+  const q=$('search').value.trim().toLowerCase(), f=$('filter').value;
+  const rows=Object.entries(requests).filter(([id,r])=>{
+    const hay=[r.dorsal,r.piloto,r.equipo,r.tipo,r.compartePiloto,r.parcela].join(' ').toLowerCase();
+    const mq=!q||hay.includes(q);
+    let mf=true;
+    if(f==='pendiente')mf=r.status!=='asignada';
+    if(f==='asignada')mf=r.status==='asignada';
+    if(f==='compartida')mf=!!r.comparte;
+    return mq&&mf;
+  }).sort((a,b)=>{
+    const da=String(a[1].dorsal||''),db=String(b[1].dorsal||'');
+    if(da&&db)return Number(da)-Number(db);
+    if(da)return -1;if(db)return 1;
+    return String(a[1].piloto||'').localeCompare(String(b[1].piloto||''),'es');
+  });
+
+  $('requests').innerHTML=rows.length?rows.map(([id,r])=>`
+  <article class="request ${r.status==='asignada'?'assigned':''}">
+    <div class="request-head">
+      <div class="dorsal">${r.dorsal?esc(r.dorsal):'S/D'}</div>
+      <div class="r-main"><strong>${esc(r.piloto)}</strong><small>${esc(r.equipo||'Sin equipo')}</small></div>
+      <span class="pill ${r.status==='asignada'?'assignedP':'pending'}">${r.status==='asignada'?'PARCELA '+esc(r.parcela||''):'PENDIENTE'}</span>
+    </div>
+    <div class="meta">
+      <span>🚚 ${esc(r.tipo||'-')}${r.cantidad?` · ${r.cantidad} ud.`:''}</span>
+      <span>☎ ${esc(r.telefono||'-')}</span>
+      <span>${esc(r.detalle||'Sin detalle')}</span>
+      <span>${r.copiloto?'Copiloto: '+esc(r.copiloto):''}</span>
+    </div>
+    ${r.comparte?`<div class="share">🔗 Comparte con <strong>${esc(r.compartePiloto)}</strong>${r.comparteDorsal?' · dorsal '+esc(r.comparteDorsal):''}</div>`:''}
+    ${r.observaciones?`<div class="muted" style="font-size:.76rem;margin-top:8px">${esc(r.observaciones)}</div>`:''}
+    <div class="request-actions">
+      <button class="btn small primary" onclick="openAssign('${id}')">${r.status==='asignada'?'Cambiar parcela':'Asignar parcela'}</button>
+      <button class="btn small" onclick="openEditRequest('${id}')">Editar / dorsal</button>
+      ${r.status==='asignada'?`<button class="btn small" onclick="focusRequest('${id}')">Ver en mapa</button>`:''}
+      <button class="btn small danger" onclick="deleteRequest('${id}')">Eliminar</button>
+    </div>
+  </article>`).join(''):'<div class="muted">No hay solicitudes con este filtro.</div>';
+}
+
+function styleForParcel(p){
+  const ids=Object.keys(p.requestIds||{});
+  const assigned=ids.length>0;
+  const shared=ids.length>1 || ids.some(id=>requests[id]?.comparte);
+  return {
+    color:shared?'#5ca9ff':assigned?'#2bd27f':'#ff7a00',
+    weight:3,
+    fillColor:shared?'#5ca9ff':assigned?'#2bd27f':'#ff7a00',
+    fillOpacity:assigned?.26:.18
+  };
+}
+
+function parcelLabelHtml(p){
+  const ids=Object.keys(p.requestIds||{});
+  const people=ids.map(id=>requests[id]).filter(Boolean);
+  const shared=people.length>1 || people.some(r=>r.comparte);
+  const dorsals=people.map(r=>r.dorsal).filter(Boolean);
+  const names=people.map(r=>r.piloto).filter(Boolean);
+  let second='';
+  if(dorsals.length)second='#'+dorsals.join(' / #');
+  else if(names.length)second=names.map(n=>n.split(' ')[0]).join(' / ');
+  return `<div class="parcel-chip ${ids.length?'assigned':''} ${shared?'shared':''}">${esc(p.label||'PARCELA')}${second?`<small>${esc(second)}</small>`:''}</div>`;
+}
+
+function renderParcels(){
+  if(!map||!editableLayers)return;
+  editableLayers.clearLayers();labelsLayer.clearLayers();
+  layerByParcel={};parcelByLayerId={};
+
+  Object.entries(parcels).forEach(([key,p])=>{
+    if(!p.geometry)return;
+    const feature={type:'Feature',properties:{},geometry:p.geometry};
+    const gj=L.geoJSON(feature,{style:()=>styleForParcel(p)});
+    let layer=null;
+    gj.eachLayer(l=>layer=l);
+    if(!layer)return;
+
+    editableLayers.addLayer(layer);
+    layerByParcel[key]=layer;
+    parcelByLayerId[layer._leaflet_id]=key;
+
+    layer.on('click',e=>{
+      L.DomEvent.stopPropagation(e);
+      openParcelModal(key);
+    });
+
+    const center=layer.getBounds().getCenter();
+    L.marker(center,{
+      interactive:false,
+      icon:L.divIcon({className:'parcel-label',html:parcelLabelHtml(p),iconSize:null})
+    }).addTo(labelsLayer);
+  });
+}
+
+function openParcelModal(key){
+  const p=parcels[key];if(!p)return;
+  $('parcelKey').value=key;$('parcelLabel').value=p.label||'';
+  $('parcelModalTitle').textContent='Parcela '+(p.label||'');
+  const ids=Object.keys(p.requestIds||{});
+  $('parcelAssigned').innerHTML=ids.length?ids.map(id=>{
+    const r=requests[id]||{};
+    return `<div class="assign-option"><div style="flex:1"><strong>${esc(r.dorsal?'#'+r.dorsal+' · ':'')}${esc(r.piloto||'Solicitud')}</strong><div class="muted" style="font-size:.72rem">${esc(r.equipo||'')}</div></div><button class="btn small danger" onclick="unassignRequest('${id}')">Quitar</button></div>`;
+  }).join(''):'<div class="muted">Parcela libre.</div>';
+  $('parcelModal').classList.add('show');
+}
+function closeParcelModal(){$('parcelModal').classList.remove('show')}
+
+async function saveParcelInfo(){
+  const key=$('parcelKey').value,label=$('parcelLabel').value.trim();
+  if(!key||!label)return;
+  await db.ref('assistanceManagement/geoParcels/'+key).update({label,updatedAt:firebase.database.ServerValue.TIMESTAMP});
+  const ids=Object.keys(parcels[key]?.requestIds||{});
+  const updates={};
+  ids.forEach(id=>updates['assistanceRequests/'+id+'/parcela']=label);
+  if(ids.length)await db.ref().update(updates);
+  closeParcelModal();
+}
+
+async function deleteParcelFromModal(){
+  const key=$('parcelKey').value;
+  if(key)await deleteParcel(key,true);
+}
+async function deleteParcel(key,ask=true){
+  const p=parcels[key];if(!p)return;
+  if(ask && !confirm('¿Eliminar esta parcela? Los inscritos quedarán pendientes de nuevo.'))return;
+  const updates={};
+  Object.keys(p.requestIds||{}).forEach(id=>{
+    updates['assistanceRequests/'+id+'/status']='pendiente';
+    updates['assistanceRequests/'+id+'/parcela']='';
+  });
+  updates['assistanceManagement/geoParcels/'+key]=null;
+  await db.ref().update(updates);
+  closeParcelModal();
+}
+
+function openAssign(id){
+  selectedRequestId=id;
+  const r=requests[id];if(!r)return;
+  $('assignWho').textContent=(r.dorsal?'Dorsal '+r.dorsal+' · ':'')+r.piloto;
+  const entries=Object.entries(parcels).sort((a,b)=>String(a[1].label||'').localeCompare(String(b[1].label||''),'es',{numeric:true}));
+  $('assignParcelSelect').innerHTML=entries.length?entries.map(([key,p])=>{
+    const n=Object.keys(p.requestIds||{}).length;
+    return `<option value="${key}">${esc(p.label)}${n?' · '+n+' asignado'+(n>1?'s':''):''}</option>`;
+  }).join(''):'<option value="">Primero dibuja alguna parcela</option>';
+  const current=requestParcelKey(id);if(current)$('assignParcelSelect').value=current;
+  $('assignError').textContent='';$('assignModal').classList.add('show');
+}
+function closeAssignModal(){$('assignModal').classList.remove('show');selectedRequestId=null}
+
+async function confirmAssignment(){
+  const requestId=selectedRequestId,key=$('assignParcelSelect').value;
+  if(!requestId||!key){$('assignError').textContent='Selecciona una parcela.';return}
+  const target=parcels[key];if(!target)return;
+
+  const updates={};
+  Object.entries(parcels).forEach(([pk,p])=>{
+    if(p.requestIds?.[requestId])updates['assistanceManagement/geoParcels/'+pk+'/requestIds/'+requestId]=null;
+  });
+  updates['assistanceManagement/geoParcels/'+key+'/requestIds/'+requestId]=true;
+  updates['assistanceRequests/'+requestId+'/status']='asignada';
+  updates['assistanceRequests/'+requestId+'/parcela']=target.label||'';
+  await db.ref().update(updates);
+  closeAssignModal();
+}
+
+async function unassignRequest(id){
+  const key=requestParcelKey(id);if(!key)return;
+  const updates={};
+  updates['assistanceManagement/geoParcels/'+key+'/requestIds/'+id]=null;
+  updates['assistanceRequests/'+id+'/status']='pendiente';
+  updates['assistanceRequests/'+id+'/parcela']='';
+  await db.ref().update(updates);
+  openParcelModal(key);
+}
+
+function openEditRequest(id){
+  const r=requests[id];if(!r)return;
+  $('editRequestId').value=id;$('editDorsal').value=r.dorsal||'';$('editPiloto').value=r.piloto||'';
+  $('editCopiloto').value=r.copiloto||'';$('editEquipo').value=r.equipo||'';$('editObservaciones').value=r.observaciones||'';
+  $('editRequestModal').classList.add('show');
+}
+function closeEditRequest(){$('editRequestModal').classList.remove('show')}
+async function saveRequestEdit(){
+  const id=$('editRequestId').value;if(!id)return;
+  await db.ref('assistanceRequests/'+id).update({
+    dorsal:$('editDorsal').value.trim().slice(0,5),
+    piloto:$('editPiloto').value.trim().slice(0,100),
+    copiloto:$('editCopiloto').value.trim().slice(0,100),
+    equipo:$('editEquipo').value.trim().slice(0,120),
+    observaciones:$('editObservaciones').value.trim().slice(0,500),
+    updatedAt:firebase.database.ServerValue.TIMESTAMP
+  });
+  closeEditRequest();
+}
+
+function focusRequest(id){
+  const key=requestParcelKey(id),layer=layerByParcel[key];
+  if(!layer)return;
+  map.fitBounds(layer.getBounds(),{padding:[60,60],maxZoom:20});
+  layer.openPopup?.();
+  const original=styleForParcel(parcels[key]);
+  layer.setStyle({color:'#fff',weight:6});
+  setTimeout(()=>layer.setStyle(original),900);
+}
+
+async function deleteRequest(id){
+  if(!confirm('¿Eliminar esta solicitud?'))return;
+  const key=requestParcelKey(id),updates={};
+  updates['assistanceRequests/'+id]=null;
+  if(key)updates['assistanceManagement/geoParcels/'+key+'/requestIds/'+id]=null;
+  await db.ref().update(updates);
+}
+
+function locateMe(){
+  if(!navigator.geolocation){alert('Este navegador no permite geolocalización.');return}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const lat=pos.coords.latitude,lng=pos.coords.longitude;
+    map.setView([lat,lng],19);$('latInput').value=lat.toFixed(6);$('lngInput').value=lng.toFixed(6);
+  },()=>alert('No se pudo obtener la ubicación.'));
+}
+function goCoords(){
+  const lat=Number($('latInput').value.replace(',','.')),lng=Number($('lngInput').value.replace(',','.'));
+  if(!Number.isFinite(lat)||!Number.isFinite(lng)){alert('Introduce latitud y longitud válidas.');return}
+  map.setView([lat,lng],19);
+}
+async function saveMapView(){
+  const c=map.getCenter(),z=map.getZoom();
+  await db.ref('assistanceManagement/mapView').set({lat:+c.lat.toFixed(7),lng:+c.lng.toFixed(7),zoom:z,updatedAt:firebase.database.ServerValue.TIMESTAMP});
+  $('latInput').value=c.lat.toFixed(6);$('lngInput').value=c.lng.toFixed(6);
+  alert('Vista del parque guardada. Los usuarios abrirán el mapa en esta zona.');
+}
+function openReference(){$('referenceModal').classList.add('show')}
+
+function queuePublicSync(){
+  clearTimeout(publicSyncTimer);
+  publicSyncTimer=setTimeout(syncPublicMap,350);
+}
+async function syncPublicMap(){
+  const publicParcels={};
+  Object.entries(parcels).forEach(([key,p])=>{
+    if(!p.geometry)return;
+    const people=Object.keys(p.requestIds||{}).map(id=>{
+      const r=requests[id];if(!r)return null;
+      return {dorsal:r.dorsal||'',piloto:r.piloto||'',equipo:r.equipo||'',parcela:p.label||'',comparte:!!r.comparte,compartePiloto:r.compartePiloto||''};
+    }).filter(Boolean);
+    publicParcels[key]={label:p.label||'',geometry:p.geometry,people};
+  });
+  try{
+    await db.ref('publicAssistanceMap').set({
+      view:savedView||null,
+      parcels:publicParcels,
+      updatedAt:firebase.database.ServerValue.TIMESTAMP
+    });
+  }catch(e){console.error('Public map sync',e)}
+}
 </script>
 </body>
 </html>

@@ -40,7 +40,7 @@
 
   <div class="layout">
     <section class="card">
-      <div class="toolbar"><input id="search" placeholder="Buscar dorsal, piloto o equipo…" oninput="renderRequests()"><select id="filter" onchange="renderRequests()"><option value="all">Todas</option><option value="pendiente">Pendientes</option><option value="asignada">Asignadas</option><option value="compartida">Compartidas</option></select></div>
+      <div class="toolbar"><input id="search" placeholder="Buscar piloto, dorsal o equipo…" oninput="renderRequests()"><select id="filter" onchange="renderRequests()"><option value="all">Todas</option><option value="pendiente">Pendientes</option><option value="asignada">Asignadas</option><option value="compartida">Compartidas</option></select></div>
       <div id="requests" class="list"></div>
     </section>
 
@@ -91,11 +91,18 @@
     const rows=Object.entries(requests).filter(([id,r])=>{
       const hay=[r.dorsal,r.piloto,r.equipo,r.tipo,r.compartePiloto].join(' ').toLowerCase();
       const mq=!q||hay.includes(q); let mf=true; if(f==='pendiente') mf=r.status!=='asignada'; if(f==='asignada') mf=r.status==='asignada'; if(f==='compartida') mf=!!r.comparte; return mq&&mf;
-    }).sort((a,b)=>Number(a[1].dorsal||9999)-Number(b[1].dorsal||9999));
-    $('requests').innerHTML=rows.length?rows.map(([id,r])=>`<article class="request ${r.status==='asignada'?'assigned':''}"><div class="request-head"><div class="dorsal">${esc(r.dorsal)}</div><div class="r-main"><strong>${esc(r.piloto)}</strong><small>${esc(r.equipo||'Sin equipo')}</small></div><span class="pill ${r.status==='asignada'?'assignedP':'pending'}">${r.status==='asignada'?'PARCELA '+esc(r.parcela||''):'PENDIENTE'}</span></div><div class="meta"><span>🚚 ${esc(r.tipo)}${r.cantidad?` · ${r.cantidad} ud.`:''}</span><span>☎ ${esc(r.telefono||'-')}</span><span>${esc(r.detalle||'Sin detalle')}</span><span>${r.copiloto?'Copiloto: '+esc(r.copiloto):''}</span></div>${r.comparte?`<div class="share">🔗 Comparte con <strong>${esc(r.compartePiloto)}</strong>${r.comparteDorsal?' · dorsal '+esc(r.comparteDorsal):''}</div>`:''}${r.observaciones?`<div class="muted" style="font-size:.76rem;margin-top:8px">${esc(r.observaciones)}</div>`:''}<div class="request-actions"><button class="btn small primary" onclick="openAssign('${id}')">${r.status==='asignada'?'Mover / cambiar':'Asignar parcela'}</button>${r.status==='asignada'?`<button class="btn small" onclick="focusPlot('${id}')">Ver en mapa</button>`:''}<button class="btn small danger" onclick="deleteRequest('${id}')">Eliminar</button></div></article>`).join(''):'<div class="muted">No hay solicitudes con este filtro.</div>';
+    }).sort((a,b)=>{
+      const da=String(a[1].dorsal||'').trim();
+      const db=String(b[1].dorsal||'').trim();
+      if(da && db) return Number(da)-Number(db);
+      if(da) return -1;
+      if(db) return 1;
+      return String(a[1].piloto||'').localeCompare(String(b[1].piloto||''),'es');
+    });
+    $('requests').innerHTML=rows.length?rows.map(([id,r])=>`<article class="request ${r.status==='asignada'?'assigned':''}"><div class="request-head"><div class="dorsal">${r.dorsal?esc(r.dorsal):'S/D'}</div><div class="r-main"><strong>${esc(r.piloto)}</strong><small>${esc(r.equipo||'Sin equipo')}</small></div><span class="pill ${r.status==='asignada'?'assignedP':'pending'}">${r.status==='asignada'?'PARCELA '+esc(r.parcela||''):'PENDIENTE'}</span></div><div class="meta"><span>🚚 ${esc(r.tipo)}${r.cantidad?` · ${r.cantidad} ud.`:''}</span><span>☎ ${esc(r.telefono||'-')}</span><span>${esc(r.detalle||'Sin detalle')}</span><span>${r.copiloto?'Copiloto: '+esc(r.copiloto):''}</span></div>${r.comparte?`<div class="share">🔗 Comparte con <strong>${esc(r.compartePiloto)}</strong>${r.comparteDorsal?' · dorsal '+esc(r.comparteDorsal):''}</div>`:''}${r.observaciones?`<div class="muted" style="font-size:.76rem;margin-top:8px">${esc(r.observaciones)}</div>`:''}<div class="request-actions"><button class="btn small primary" onclick="openAssign('${id}')">${r.status==='asignada'?'Mover / cambiar':'Asignar parcela'}</button>${r.status==='asignada'?`<button class="btn small" onclick="focusPlot('${id}')">Ver en mapa</button>`:''}<button class="btn small danger" onclick="deleteRequest('${id}')">Eliminar</button></div></article>`).join(''):'<div class="muted">No hay solicitudes con este filtro.</div>';
   }
 
-  function openAssign(id){ const r=requests[id]; if(!r)return; pendingAssignment={requestId:id,label:r.parcela||'',notes:''}; $('assignWho').textContent=`Dorsal ${r.dorsal} · ${r.piloto}`; $('parcelLabel').value=r.parcela||''; const existing=Object.values(plots).find(p=>p.requestId===id); $('parcelNotes').value=existing?.notes||''; $('assignError').textContent=''; $('assignModal').classList.add('show'); }
+  function openAssign(id){ const r=requests[id]; if(!r)return; pendingAssignment={requestId:id,label:r.parcela||'',notes:''}; $('assignWho').textContent=r.dorsal ? `Dorsal ${r.dorsal} · ${r.piloto}` : `Sin dorsal · ${r.piloto}`; $('parcelLabel').value=r.parcela||''; const existing=Object.values(plots).find(p=>p.requestId===id); $('parcelNotes').value=existing?.notes||''; $('assignError').textContent=''; $('assignModal').classList.add('show'); }
   function closeAssign(){ $('assignModal').classList.remove('show'); if(pendingAssignment && pendingAssignment.placing) pendingAssignment=null; $('placementBanner').classList.remove('show'); }
   function startPlacement(){ if(!mapData?.dataUrl){$('assignError').textContent='Primero sube el mapa de asistencia.';return;} const label=$('parcelLabel').value.trim(); if(!label){$('assignError').textContent='Indica el número o nombre de parcela.';return;} pendingAssignment.label=label; pendingAssignment.notes=$('parcelNotes').value.trim(); pendingAssignment.placing=true; $('assignModal').classList.remove('show'); $('placementBanner').textContent=`Colocando ${label} · haz clic en el mapa`; $('placementBanner').classList.add('show'); }
 
